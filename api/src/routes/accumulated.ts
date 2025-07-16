@@ -1,0 +1,83 @@
+import { Router, Status } from "@oak/oak";
+import { AccumulatedManager } from "../db/AccumulatedManager.ts";
+import { supClient } from "../config/supabase.ts";
+import { validate } from "../utils/validate.ts";
+import { AccumulatedSchema } from "../validation/AccumulatedSchema.ts";
+
+const router = new Router();
+
+router.get("/accumulated", async (ctx) => {
+  const { user } = ctx.state;
+
+  const response = await AccumulatedManager.get({
+    userID: user.sub,
+    client: supClient,
+  });
+
+  ctx.response.status = response.data.status;
+  ctx.response.body = response;
+});
+
+router.post("/accumulated", async (ctx) => {
+  const { user } = ctx.state;
+  const body = await ctx.request.body.json();
+
+  const validation = validate({ data: body, schema: AccumulatedSchema });
+
+  if (!validation.success) {
+    ctx.response.body = validation;
+    ctx.response.status = Status.UnprocessableEntity;
+    return;
+  }
+
+  const response = await AccumulatedManager.insert({
+    name: body.name,
+    total: body.total,
+    userID: user.sub,
+    client: supClient,
+  });
+
+  ctx.response.status = response.data.status;
+  ctx.response.body = response;
+});
+
+router.delete("/accumulated/:id", async (ctx) => {
+  const id = isNaN(Number(ctx.params.id)) ? 0 : Number(ctx.params.id);
+  const { user } = ctx.state;
+
+  const response = await AccumulatedManager.delete({
+    accumulatedID: id,
+    userID: user.sub,
+    client: supClient,
+  });
+
+  ctx.response.status = response.data.status;
+  ctx.response.body = response;
+});
+
+router.put("/accumulated/:id", async (ctx) => {
+  const { user } = ctx.state;
+  const body = await ctx.request.body.json();
+  const id = isNaN(Number(ctx.params.id)) ? 0 : Number(ctx.params.id);
+
+  const validation = validate({ data: body, schema: AccumulatedSchema });
+
+  if (!validation.success) {
+    ctx.response.body = validation;
+    ctx.response.status = Status.UnprocessableEntity;
+    return;
+  }
+
+  const response = await AccumulatedManager.update({
+    client: supClient,
+    name: body.name,
+    total: body.total,
+    accumulatedID: id,
+    userID: user.sub,
+  });
+
+  ctx.response.status = response.data.status;
+  ctx.response.body = response;
+});
+
+export default router;

@@ -1,0 +1,44 @@
+services:
+  proxy:
+    container_name: expenses-proxy
+    image: traefik:v2.11
+    command: --providers.docker
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  backend:
+    container_name: deno-expenses-api
+    build:
+      context: ./
+    develop:
+      watch:
+        - path: ./main.ts
+          action: rebuild
+          target: ./main.ts
+  
+  mysql:
+    container_name: expenses-data-base
+    image: mysql:8.0
+    volumes:
+      - expenses-mysql-data:/var/lib/mysql
+    env_file:
+      - ./api/src/db/.env
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin
+    env_file:
+      - ./api/src/db/.env
+    labels:
+      traefik.http.routers.phpmyadmin.rule: Host(`db.localhost`)
+      traefik.http.services.phpmyadmin.loadbalancer.server.port: 80
+  
+volumes:
+  expenses-mysql-data:
+
