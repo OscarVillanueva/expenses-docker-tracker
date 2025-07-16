@@ -7,7 +7,7 @@ import {
   UpdatePurpose,
 } from "../types/PurposeManagerTypes.ts";
 import { Response } from "../types/Response.ts";
-import { db } from "./config"
+import { db } from "./config.ts"
 import { eq, and } from 'drizzle-orm';
 
 export const PurposeManager = {
