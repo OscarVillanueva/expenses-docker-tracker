@@ -1,6 +1,5 @@
 import { Router, Status } from "@oak/oak";
 import { PurposeManager } from "../db/PurposeManager.ts";
-import { supClient } from "../config/supabase.ts";
 import { PurposeSchema } from "../validation/PurposeSchema.ts";
 import { validate } from "../utils/validate.ts";
 
@@ -11,7 +10,7 @@ router.get("/purpose", async (ctx) => {
 
   const response = await PurposeManager.get({
     userID: user.sub,
-    client: supClient,
+    
   });
 
   ctx.response.status = response.data.status;
@@ -33,7 +32,6 @@ router.post("/purpose", async (ctx) => {
   const response = await PurposeManager.insert({
     name: body.name,
     userID: user.sub,
-    client: supClient,
   });
 
   ctx.response.status = response.data.status;
@@ -47,7 +45,6 @@ router.delete("/purpose/:id", async (ctx) => {
   const response = await PurposeManager.delete({
     purposeID: id,
     userID: user.sub,
-    client: supClient,
   });
 
   ctx.response.status = response.data.status;
@@ -68,7 +65,6 @@ router.put("/purpose/:id", async (ctx) => {
   }
 
   const response = await PurposeManager.update({
-    client: supClient,
     name: body.name,
     purposeID: id,
     userID: user.sub,

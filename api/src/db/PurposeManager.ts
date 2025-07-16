@@ -7,19 +7,30 @@ import {
   UpdatePurpose,
 } from "../types/PurposeManagerTypes.ts";
 import { Response } from "../types/Response.ts";
+import { db } from "./config"
+import { eq, and } from 'drizzle-orm';
 
 export const PurposeManager = {
   table: "purpose",
   primaryKey: "id",
   async get(props: GetPurpose): Promise<Response<GetPurposeResponse[]>> {
-    const { userID, client } = props;
+    try {
+      const { userID } = props;
 
-    const { data, error } = await client
-      .from(this.table)
-      .select()
-      .eq("belong_to", userID);
+      const data = await db
+        .select()
+        .from(this.table)
+        .where(eq("belong_to", userID));
 
-    if (error) {
+      return {
+        success: true,
+        data: {
+          message: "purpose data",
+          data,
+          status: Status.OK,
+        },
+      };
+    } catch (error) {
       return {
         success: false,
         data: {
@@ -28,28 +39,22 @@ export const PurposeManager = {
         },
       };
     }
-
-    return {
-      success: true,
-      data: {
-        message: "purpose data",
-        data,
-        status: Status.OK,
-      },
-    };
   },
   async insert(props: CreatePurpose): Promise<Response<GetPurposeResponse[]>> {
-    const { name, client, userID } = props;
+    try {
+      const { name, userID } = props;
 
-    const { data, error } = await client
-      .from(this.table)
-      .insert({
-        name,
-        belong_to: userID,
-      })
-      .select();
+      const data = await db.insert(this.table).values({ name, belong_to: userID })
 
-    if (error) {
+      return {
+        success: true,
+        data: {
+          message: "purpose created successfully",
+          data,
+          status: Status.OK,
+        },
+      };
+    } catch (error) {
       return {
         success: false,
         data: {
@@ -58,27 +63,29 @@ export const PurposeManager = {
         },
       };
     }
-
-    return {
-      success: true,
-      data: {
-        message: "purpose created successfully",
-        data,
-        status: Status.OK,
-      },
-    };
   },
   async delete(props: DeletePurpose): Promise<Response<GetPurposeResponse[]>> {
-    const { purposeID, client, userID } = props;
+    try {
+      const { purposeID, userID } = props;
 
-    const { data, error } = await client
-      .from(this.table)
-      .delete()
-      .eq(this.primaryKey, purposeID)
-      .eq("belong_to", userID)
-      .select();
+      const data = await db
+        .delete(this.table)
+        .where(
+          and(
+            eq(this.primaryKey, purposeID),
+            eq("belong_to", userID)
+          )
+        )
 
-    if (error) {
+      return {
+        success: true,
+        data: {
+          message: "purpose deleted, rows affected",
+          data,
+          status: Status.OK,
+        },
+      };
+    } catch (error) {
       return {
         success: false,
         data: {
@@ -88,27 +95,30 @@ export const PurposeManager = {
         },
       };
     }
-
-    return {
-      success: true,
-      data: {
-        message: "purpose deleted, rows affected",
-        data,
-        status: Status.OK,
-      },
-    };
   },
   async update(props: UpdatePurpose): Promise<Response<GetPurposeResponse[]>> {
-    const { name, purposeID, client, userID } = props;
+    try {
+      const { name, purposeID, userID } = props;
 
-    const { data, error } = await client
-      .from(this.table)
-      .update({ name })
-      .eq(this.primaryKey, purposeID)
-      .eq("belong_to", userID)
-      .select();
+      const data = await db
+        .update(this.table)
+        .set({  name })
+        .where(
+          and(
+            eq(this.primaryKey, purposeID),
+            eq("belong_to", userID)
+          )
+        );
 
-    if (error) {
+      return {
+        success: true,
+        data: {
+          message: "purpose updated, rows affected",
+          data,
+          status: Status.OK,
+        },
+      };
+    } catch (error) {
       return {
         success: false,
         data: {
@@ -118,14 +128,5 @@ export const PurposeManager = {
         },
       };
     }
-
-    return {
-      success: true,
-      data: {
-        message: "purpose updated, rows affected",
-        data,
-        status: Status.OK,
-      },
-    };
   },
 };

@@ -1,12 +1,7 @@
-import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
-type PurposeBase = {
-  client: SupabaseClient;
-};
-
 // Get: Purpose
 export type GetPurpose = {
   userID: string;
-} & PurposeBase;
+} 
 
 export interface GetPurposeResponse {
   id: number;
@@ -20,17 +15,17 @@ export interface GetPurposeResponse {
 export type CreatePurpose = {
   name: string;
   userID: string;
-} & PurposeBase;
+} 
 
 // Delete: Purpose
 export type DeletePurpose = {
   purposeID: number;
   userID: string;
-} & PurposeBase;
+} 
 
 // Update: Purpose
 export type UpdatePurpose = {
   name: string;
   purposeID: number;
   userID: string;
-} & PurposeBase;
+} 
