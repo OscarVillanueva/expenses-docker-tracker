@@ -14,4 +14,4 @@ RUN deno cache ./src/main.ts
 EXPOSE 8000
 
 # Run the app
-CMD ["deno", "run", "--allow-net", "./src/main.ts"]
+CMD ["deno", "run", "--env-file", "--allow-net", "./src/main.ts"]
