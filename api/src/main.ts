@@ -24,7 +24,8 @@ app.use(async (ctx:any, next:any) => {
     ctx.state.user = { sub: payload }
     await next();
   } else {
-    ctx.throw(Status.Unathorized, "Invalid Token")
+    ctx.response.status = Status.Unauthorized;
+    ctx.response.body = "Invalid Token";
   }
 });
 
