@@ -15,6 +15,11 @@
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0"
   },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
