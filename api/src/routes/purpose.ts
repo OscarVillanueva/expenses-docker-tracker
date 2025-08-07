@@ -10,7 +10,6 @@ router.get("/purpose", async (ctx) => {
 
   const response = await PurposeManager.get({
     userID: user.sub,
-    
   });
 
   ctx.response.status = response.data.status;

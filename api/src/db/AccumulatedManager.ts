@@ -1,5 +1,7 @@
 import { Status } from "jsr:@oak/commons@1/status";
-
+import { eq, and, desc } from 'drizzle-orm';
+import { db } from "./config.ts"
+import { accumulated } from "./schema.ts";
 import { Response } from "../types/Response.ts";
 import {
   UpdateAccumulated,
@@ -10,131 +12,151 @@ import {
 } from "../types/AccumulatedManagerTypes.ts";
 
 export const AccumulatedManager = {
-  table: "accumulated",
   async get(
     props: GetAccumulated
   ): Promise<Response<GetAccumulatedResponse[]>> {
-    const { userID, client } = props;
+    try {
+      const { userID } = props;
 
-    const { data, error } = await client
-      .from(this.table)
-      .select()
-      .eq("belong_to", userID);
+      const data = await db
+        .select()
+        .from(accumulated)
+        .where(eq(accumulated.belong_to, userID));
 
-    if (error) {
+      return {
+        success: true,
+        data: {
+          message: "accumulated data",
+          data: data as GetAccumulatedResponse[],
+          status: Status.OK,
+        },
+      };
+    } catch (error) {
       return {
         success: false,
         data: {
-          message: error.code || "unexpected_failure",
+          message: (error as Error).message || "unexpected_failure",
           status: Status.UnprocessableEntity,
         },
       };
     }
-
-    return {
-      success: true,
-      data: {
-        message: "accumulated data",
-        data,
-        status: Status.OK,
-      },
-    };
   },
   async insert(
     props: CreateAccumulated
   ): Promise<Response<GetAccumulatedResponse[]>> {
-    const { name, total, client, userID } = props;
+    try {
+      const { name, total, userID } = props;
 
-    const { data, error } = await client
-      .from(this.table)
-      .insert({
-        name,
-        belong_to: userID,
-        total,
-      })
-      .select();
+      await db
+        .insert(accumulated)
+        .values({
+          name,
+          belong_to: userID,
+          total: total.toString(),
+        });
 
-    if (error) {
+      // Get the most recent accumulated record for this user
+      const data = await db
+        .select()
+        .from(accumulated)
+        .where(eq(accumulated.belong_to, userID))
+        .orderBy(desc(accumulated.id))
+        .limit(1);
+
+      return {
+        success: true,
+        data: {
+          message: "accumulated created successfully",
+          data: data as GetAccumulatedResponse[],
+          status: Status.OK,
+        },
+      };
+    } catch (error) {
       return {
         success: false,
         data: {
-          message: error.code,
+          message: (error as Error).message || "insertion failed",
           status: Status.UnprocessableEntity,
         },
       };
     }
-
-    return {
-      success: true,
-      data: {
-        message: "accumulated created successfully",
-        data,
-        status: Status.OK,
-      },
-    };
   },
   async delete(
     props: DeleteAccumulated
   ): Promise<Response<GetAccumulatedResponse[]>> {
-    const { accumulatedID, client, userID } = props;
+    try {
+      const { accumulatedID, userID } = props;
 
-    const { data, error } = await client
-      .from(this.table)
-      .delete()
-      .eq("id", accumulatedID)
-      .eq("belong_to", userID)
-      .select();
+      await db
+        .delete(accumulated)
+        .where(
+          and(
+            eq(accumulated.id, accumulatedID),
+            eq(accumulated.belong_to, userID)
+          )
+        );
 
-    if (error) {
+      return {
+        success: true,
+        data: {
+          message: "accumulated deleted successfully",
+          data: [],
+          status: Status.OK,
+        },
+      };
+    } catch (error) {
       return {
         success: false,
         data: {
-          message:
-            error.code === "23503" ? "the row is refed somewhere" : error.code,
+          message: (error as Error).message || "deletion failed",
           status: Status.UnprocessableEntity,
         },
       };
     }
-
-    return {
-      success: true,
-      data: {
-        message: "accumulated deleted, rows affected",
-        data,
-        status: Status.OK,
-      },
-    };
   },
   async update(
     props: UpdateAccumulated
   ): Promise<Response<GetAccumulatedResponse[]>> {
-    const { name, accumulatedID, total, client, userID } = props;
+    try {
+      const { name, accumulatedID, total, userID } = props;
 
-    const { data, error } = await client
-      .from(this.table)
-      .update({ name, total })
-      .eq("id", accumulatedID)
-      .eq("belong_to", userID)
-      .select();
+      await db
+        .update(accumulated)
+        .set({ name, total: total.toString() })
+        .where(
+          and(
+            eq(accumulated.id, accumulatedID),
+            eq(accumulated.belong_to, userID)
+          )
+        );
 
-    if (error) {
+      // Get the updated accumulated record
+      const data = await db
+        .select()
+        .from(accumulated)
+        .where(
+          and(
+            eq(accumulated.id, accumulatedID),
+            eq(accumulated.belong_to, userID)
+          )
+        );
+
+      return {
+        success: true,
+        data: {
+          message: "accumulated updated successfully",
+          data: data as GetAccumulatedResponse[],
+          status: Status.OK,
+        },
+      };
+    } catch (error) {
       return {
         success: false,
         data: {
-          message:
-            error.code === "23503" ? "the row is refed somewhere" : error.code,
+          message: (error as Error).message || "update failed",
           status: Status.UnprocessableEntity,
         },
       };
     }
-
-    return {
-      success: true,
-      data: {
-        message: "Accumulated updated, rows affected",
-        data,
-        status: Status.OK,
-      },
-    };
   },
 };

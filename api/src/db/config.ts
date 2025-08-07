@@ -1,6 +1,7 @@
 
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
+import * as schema from "./schema.ts";
 
 const connection = await mysql.createConnection({
   host: Deno.env.get("DB_HOST"),
@@ -9,8 +10,6 @@ const connection = await mysql.createConnection({
   database: Deno.env.get("DB_NAME"),
 });
 
-export const db = drizzle({ client: connection });
-
-console.log(db)
+export const db = drizzle({ client: connection, schema, mode: 'default' });
 
 console.log("Connected to the database successfully")

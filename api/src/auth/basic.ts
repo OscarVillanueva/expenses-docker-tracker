@@ -6,6 +6,8 @@ export const validate = (secret: string)=> {
   if(token !== secret) return null
 
   const content = decodeBase64(secret); 
- 
-  return content.split(":")[0]
+
+  const textDecoder = new TextDecoder();
+
+  return textDecoder.decode(content).split(":")[0]
 }

@@ -6,9 +6,9 @@ export type GetPurpose = {
 export interface GetPurposeResponse {
   id: number;
   name: string;
-  total: number;
+  total: string; // Drizzle returns decimal as string
   belong_to: string;
-  created_at: Date;
+  created_at: Date | null;
 }
 
 // Create: Purpose

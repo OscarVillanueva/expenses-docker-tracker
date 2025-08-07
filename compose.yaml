@@ -14,9 +14,16 @@ services:
       context: ./
     develop:
       watch:
-        - path: ./main.ts
+        - path: ./api/src/main.ts
           action: rebuild
-          target: ./main.ts
+          target: ./api/src/main.ts
+    depends_on:
+      mysql:
+        condition: service_healthy
+    labels:
+      traefik.http.routers.backend.rule: Host(`api.localhost`)
+      traefik.http.services.backend.loadbalancer.server.port: 8000
+
   
   mysql:
     container_name: expenses-data-base

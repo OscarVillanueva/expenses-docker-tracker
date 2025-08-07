@@ -1,6 +1,5 @@
 import { Router, Status } from "@oak/oak";
 import { AccumulatedManager } from "../db/AccumulatedManager.ts";
-import { supClient } from "../config/supabase.ts";
 import { validate } from "../utils/validate.ts";
 import { AccumulatedSchema } from "../validation/AccumulatedSchema.ts";
 
@@ -11,7 +10,6 @@ router.get("/accumulated", async (ctx) => {
 
   const response = await AccumulatedManager.get({
     userID: user.sub,
-    client: supClient,
   });
 
   ctx.response.status = response.data.status;
@@ -34,7 +32,6 @@ router.post("/accumulated", async (ctx) => {
     name: body.name,
     total: body.total,
     userID: user.sub,
-    client: supClient,
   });
 
   ctx.response.status = response.data.status;
@@ -48,7 +45,6 @@ router.delete("/accumulated/:id", async (ctx) => {
   const response = await AccumulatedManager.delete({
     accumulatedID: id,
     userID: user.sub,
-    client: supClient,
   });
 
   ctx.response.status = response.data.status;
@@ -69,7 +65,6 @@ router.put("/accumulated/:id", async (ctx) => {
   }
 
   const response = await AccumulatedManager.update({
-    client: supClient,
     name: body.name,
     total: body.total,
     accumulatedID: id,

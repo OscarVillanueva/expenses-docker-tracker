@@ -31,6 +31,6 @@ app.use(async (ctx:any, next:any) => {
 app.use(purposeRouter.routes());
 app.use(transactionRouter.routes());
 app.use(accumulatedRouter.routes());
-app.use(accumulatedRouter.allowesMethods())
+app.use(accumulatedRouter.allowedMethods())
 
-app.listen({ port: 5173 });
+app.listen({ port: 8000 });

@@ -8,25 +8,24 @@ import {
 } from "../types/PurposeManagerTypes.ts";
 import { Response } from "../types/Response.ts";
 import { db } from "./config.ts"
-import { eq, and } from 'drizzle-orm';
+import { purpose } from "./schema.ts";
+import { eq, and, desc } from 'drizzle-orm';
 
 export const PurposeManager = {
-  table: "purpose",
-  primaryKey: "id",
   async get(props: GetPurpose): Promise<Response<GetPurposeResponse[]>> {
     try {
       const { userID } = props;
 
       const data = await db
         .select()
-        .from(this.table)
-        .where(eq("belong_to", userID));
+        .from(purpose)
+        .where(eq(purpose.belong_to, userID));
 
       return {
         success: true,
         data: {
           message: "purpose data",
-          data,
+          data: data as GetPurposeResponse[],
           status: Status.OK,
         },
       };
@@ -34,7 +33,7 @@ export const PurposeManager = {
       return {
         success: false,
         data: {
-          message: error.code || "unexpected_failure",
+          message: (error as Error).message || "unexpected_failure",
           status: Status.UnprocessableEntity,
         },
       };
@@ -44,13 +43,23 @@ export const PurposeManager = {
     try {
       const { name, userID } = props;
 
-      const data = await db.insert(this.table).values({ name, belong_to: userID })
+      await db
+        .insert(purpose)
+        .values({ name, belong_to: userID });
+
+      // Get the most recent purpose for this user
+      const data = await db
+        .select()
+        .from(purpose)
+        .where(eq(purpose.belong_to, userID))
+        .orderBy(desc(purpose.id))
+        .limit(1);
 
       return {
         success: true,
         data: {
           message: "purpose created successfully",
-          data,
+          data: data as GetPurposeResponse[],
           status: Status.OK,
         },
       };
@@ -58,7 +67,7 @@ export const PurposeManager = {
       return {
         success: false,
         data: {
-          message: error.code,
+          message: (error as Error).message || "insertion failed",
           status: Status.UnprocessableEntity,
         },
       };
@@ -68,20 +77,20 @@ export const PurposeManager = {
     try {
       const { purposeID, userID } = props;
 
-      const data = await db
-        .delete(this.table)
+      await db
+        .delete(purpose)
         .where(
           and(
-            eq(this.primaryKey, purposeID),
-            eq("belong_to", userID)
+            eq(purpose.id, purposeID),
+            eq(purpose.belong_to, userID)
           )
-        )
+        );
 
       return {
         success: true,
         data: {
-          message: "purpose deleted, rows affected",
-          data,
+          message: "purpose deleted successfully",
+          data: [],
           status: Status.OK,
         },
       };
@@ -89,8 +98,7 @@ export const PurposeManager = {
       return {
         success: false,
         data: {
-          message:
-            error.code === "23503" ? "the row is refed somewhere" : error.code,
+          message: (error as Error).message || "deletion failed",
           status: Status.UnprocessableEntity,
         },
       };
@@ -100,21 +108,32 @@ export const PurposeManager = {
     try {
       const { name, purposeID, userID } = props;
 
-      const data = await db
-        .update(this.table)
-        .set({  name })
+      await db
+        .update(purpose)
+        .set({ name })
         .where(
           and(
-            eq(this.primaryKey, purposeID),
-            eq("belong_to", userID)
+            eq(purpose.id, purposeID),
+            eq(purpose.belong_to, userID)
+          )
+        );
+
+      // Get the updated purpose
+      const data = await db
+        .select()
+        .from(purpose)
+        .where(
+          and(
+            eq(purpose.id, purposeID),
+            eq(purpose.belong_to, userID)
           )
         );
 
       return {
         success: true,
         data: {
-          message: "purpose updated, rows affected",
-          data,
+          message: "purpose updated successfully",
+          data: data as GetPurposeResponse[],
           status: Status.OK,
         },
       };
@@ -122,8 +141,7 @@ export const PurposeManager = {
       return {
         success: false,
         data: {
-          message:
-            error.code === "23503" ? "the row is refed somewhere" : error.code,
+          message: (error as Error).message || "update failed",
           status: Status.UnprocessableEntity,
         },
       };

@@ -1,5 +1,3 @@
-import SupabaseClient from "https://jsr.io/@supabase/supabase-js/2.47.3/src/SupabaseClient.ts";
-
 export interface TransactionResponse {
   id: number;
   date: Date;
@@ -15,10 +13,6 @@ export interface Purpose {
   belong_to: string;
 }
 
-type TransactionBase = {
-  client: SupabaseClient;
-};
-
 export type Transaction = {
   date: string;
   is_expense: boolean;
@@ -28,17 +22,17 @@ export type Transaction = {
   is_cash: boolean;
 };
 
-// Get: Purpose
+// Get: Transaction
 export type GetTransaction = {
   userID: string;
-} & TransactionBase;
+} 
 
 export type CreateTransaction = {
   userID: string;
   transaction: Transaction;
-} & TransactionBase;
+} 
 
 export type DeleteTransaction = {
   userID: string;
   transactionID: number;
-} & TransactionBase;
+}

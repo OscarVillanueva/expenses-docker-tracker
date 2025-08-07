@@ -1,7 +1,9 @@
 import { Status } from "jsr:@oak/commons@1/status";
+import { eq, and, desc } from 'drizzle-orm';
+import { db } from "./config.ts"
+import { transaction, purpose } from "./schema.ts";
 import { Response } from "../types/Response.ts";
 import { TransactionResponse } from "../types/TransactionManagerTypes.ts";
-import { PurposeManager } from "./PurposeManager.ts";
 import {
   GetTransaction,
   CreateTransaction,
@@ -10,121 +12,146 @@ import {
 } from "../types/TransactionManagerTypes.ts";
 
 export const TransactionManager = {
-  table: "transaction",
-  select: "*, purpose!inner(belong_to)",
-  foreignKey: "purpose.belong_to",
   async get(props: GetTransaction): Promise<Response<TransactionResponse[]>> {
-    const { userID, client } = props;
+    try {
+      const { userID } = props;
 
-    const { data, error } = await client
-      .from(this.table)
-      .select(this.select)
-      .eq(this.foreignKey, userID)
-      .gte("date", "2024-11-01")
-      .lte("date", "2025-01-23")
-      .order("date", { ascending: false });
+      const result = await db
+        .select()
+        .from(transaction)
+        .innerJoin(purpose, eq(transaction.included_in, purpose.id))
+        .where(eq(purpose.belong_to, userID));
 
-    if (error) {
+      return {
+        success: true,
+        data: {
+          message: "transaction data",
+          data: result as TransactionResponse[],
+          status: Status.OK,
+        },
+      };
+    } catch (error) {
       return {
         success: false,
         data: {
-          message: error.code || "unexpected_failure",
-          status: Status.UnprocessableEntity,
-        },
-      };
+          message: "We cannot fetch the data of transactions",
+          data: undefined,
+          status: Status.NotFound
+        }
+      }
     }
-
-    return {
-      success: true,
-      data: {
-        message: "purpose data",
-        data: data as unknown as TransactionResponse[],
-        status: Status.OK,
-      },
-    };
   },
   async insert(props: CreateTransaction): Promise<Response<Transaction[]>> {
-    const { client, userID, transaction } = props;
+    try {
+      const { userID, transaction: transactionData } = props;
 
-    const exists = await client
-      .from(PurposeManager.table)
-      .select()
-      .eq("belong_to", userID)
-      .eq(PurposeManager.primaryKey, transaction.included_in);
+      // Check if the purpose exists and belongs to the user
+      const existingPurpose = await db
+        .select()
+        .from(purpose)
+        .where(
+          and(
+            eq(purpose.belong_to, userID),
+            eq(purpose.id, transactionData.included_in)
+          )
+        );
 
-    if (exists.error || exists.data.length === 0)
+      if (existingPurpose.length === 0) {
+        return {
+          success: false,
+          data: {
+            message: "the insertion was unsuccessful - purpose not found or doesn't belong to user",
+            status: Status.UnprocessableEntity,
+          },
+        };
+      }
+
+      // Insert the transaction
+      await db
+        .insert(transaction)
+        .values({
+          date: new Date(transactionData.date),
+          is_expense: transactionData.is_expense,
+          name: transactionData.name,
+          amount: transactionData.amount.toString(),
+          included_in: transactionData.included_in,
+          is_cash: transactionData.is_cash,
+        });
+
+      // Get the most recently inserted transaction for this user
+      const result = await db
+        .select()
+        .from(transaction)
+        .innerJoin(purpose, eq(transaction.included_in, purpose.id))
+        .where(eq(purpose.belong_to, userID))
+        .orderBy(desc(transaction.id))
+        .limit(1);
+
       return {
-        success: false,
+        success: true,
         data: {
-          message: "the insertion was unsuccessful",
-          status: Status.UnprocessableEntity,
+          message: "transaction created successfully",
+          data: result as unknown as Transaction[],
+          status: Status.OK,
         },
       };
-
-    const { data, error } = await client
-      .from(this.table)
-      .insert(transaction)
-      .select(this.select);
-
-    if (error) {
+    } catch (error) {
       return {
         success: false,
         data: {
-          message: error.code,
+          message: (error as Error).message || "unexpected error during insertion",
           status: Status.UnprocessableEntity,
         },
       };
     }
-
-    return {
-      success: true,
-      data: {
-        message: "purpose created successfully",
-        data: data as unknown as Transaction[],
-        status: Status.OK,
-      },
-    };
   },
   async delete(props: DeleteTransaction): Promise<Response<GetTransaction[]>> {
-    const { client, userID, transactionID } = props;
+    try {
+      const { userID, transactionID } = props;
 
-    const exists = await client
-      .from(this.table)
-      .select(this.select)
-      .eq("id", transactionID)
-      .eq(this.foreignKey, userID);
+      // Check if transaction exists and belongs to user via purpose
+      const existingTransaction = await db
+        .select()
+        .from(transaction)
+        .innerJoin(purpose, eq(transaction.included_in, purpose.id))
+        .where(
+          and(
+            eq(transaction.id, transactionID),
+            eq(purpose.belong_to, userID)
+          )
+        );
 
-    if (exists.error || exists.data.length === 0)
+      if (existingTransaction.length === 0) {
+        return {
+          success: false,
+          data: {
+            message: "the deletion was unsuccessful - transaction not found or doesn't belong to user",
+            status: Status.UnprocessableEntity,
+          },
+        };
+      }
+
+      // Delete the transaction
+      await db
+        .delete(transaction)
+        .where(eq(transaction.id, transactionID));
+
+      return {
+        success: true,
+        data: {
+          message: "transaction deleted successfully",
+          data: [],
+          status: Status.OK,
+        },
+      };
+    } catch (error) {
       return {
         success: false,
         data: {
-          message: "the deletion was unsuccessful",
+          message: (error as Error).message || "unexpected error during deletion",
           status: Status.UnprocessableEntity,
         },
       };
-
-    const { data, error } = await client
-      .from(this.table)
-      .delete()
-      .eq("id", transactionID)
-      .select();
-
-    if (error)
-      return {
-        success: false,
-        data: {
-          message: error.code,
-          status: Status.UnprocessableEntity,
-        },
-      };
-
-    return {
-      success: true,
-      data: {
-        message: "transaction deleted, rows affected",
-        data,
-        status: Status.OK,
-      },
-    };
+    }
   },
 };
