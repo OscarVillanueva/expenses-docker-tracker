@@ -1,8 +1,0 @@
-{
-  "imports": {
-    "@commitlint/cli": "npm:@commitlint/cli@^19.8.1",
-    "@commitlint/config-conventional": "npm:@commitlint/config-conventional@^19.8.1",
-    "commitlint": "npm:commitlint@^19.8.1",
-    "cz-conventional-changelog": "npm:cz-conventional-changelog@^3.3.0"
-  }
-}
