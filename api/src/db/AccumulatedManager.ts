@@ -5,7 +5,6 @@ import { db } from "./config.ts"
 import { accumulated } from "./schema.ts";
 import { Response } from "../types/Response.ts";
 import {
-  UpdateAccumulated,
   CreateAccumulated,
   DeleteAccumulated,
   GetAccumulated,
