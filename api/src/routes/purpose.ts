@@ -1,4 +1,5 @@
 import { Router, Status } from "@oak/oak";
+import * as uuid from "jsr:@std/uuid";
 import { PurposeManager } from "../db/PurposeManager.ts";
 import { PurposeSchema } from "../validation/PurposeSchema.ts";
 import { validate } from "../utils/validate.ts";
@@ -38,11 +39,16 @@ router.post("/purpose", async (ctx) => {
 });
 
 router.delete("/purpose/:id", async (ctx) => {
-  const id = isNaN(Number(ctx.params.id)) ? 0 : Number(ctx.params.id);
+  if(!uuid.validate(ctx.params.id)) {
+    ctx.response.status = Status.BadRequest
+    ctx.response.body = "Invalid uuid"
+    return
+  }
+
   const { user } = ctx.state;
 
   const response = await PurposeManager.delete({
-    purposeID: id,
+    purposeID: ctx.params.id,
     userID: user.sub,
   });
 
@@ -51,9 +57,14 @@ router.delete("/purpose/:id", async (ctx) => {
 });
 
 router.put("/purpose/:id", async (ctx) => {
+  if(!uuid.validate(ctx.params.id)) {
+    ctx.response.status = Status.BadRequest
+    ctx.response.body = "Invalid uuid"
+    return
+  }
+
   const { user } = ctx.state;
   const body = await ctx.request.body.json();
-  const id = isNaN(Number(ctx.params.id)) ? 0 : Number(ctx.params.id);
 
   const validation = validate({ data: body, schema: PurposeSchema });
 
@@ -65,7 +76,7 @@ router.put("/purpose/:id", async (ctx) => {
 
   const response = await PurposeManager.update({
     name: body.name,
-    purposeID: id,
+    purposeID: ctx.params.id,
     userID: user.sub,
   });
 

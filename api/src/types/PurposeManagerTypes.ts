@@ -4,7 +4,7 @@ export type GetPurpose = {
 } 
 
 export interface GetPurposeResponse {
-  id: number;
+  uuid: string;
   name: string;
   total: string; // Drizzle returns decimal as string
   belong_to: string;
@@ -19,13 +19,13 @@ export type CreatePurpose = {
 
 // Delete: Purpose
 export type DeletePurpose = {
-  purposeID: number;
+  purposeID: string;
   userID: string;
 } 
 
 // Update: Purpose
 export type UpdatePurpose = {
   name: string;
-  purposeID: number;
+  purposeID: string;
   userID: string;
 } 

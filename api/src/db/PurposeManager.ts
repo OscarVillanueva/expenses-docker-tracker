@@ -1,4 +1,5 @@
 import { Status } from "jsr:@oak/commons@1/status";
+import * as uuid from "jsr:@std/uuid";
 import {
   GetPurpose,
   GetPurposeResponse,
@@ -39,27 +40,21 @@ export const PurposeManager = {
       };
     }
   },
-  async insert(props: CreatePurpose): Promise<Response<GetPurposeResponse[]>> {
+  async insert(props: CreatePurpose): Promise<Response<string>> {
     try {
       const { name, userID } = props;
 
+      const idx = uuid.v1.generate()
+
       await db
         .insert(purpose)
-        .values({ name, belong_to: userID });
-
-      // Get the most recent purpose for this user
-      const data = await db
-        .select()
-        .from(purpose)
-        .where(eq(purpose.belong_to, userID))
-        .orderBy(desc(purpose.id))
-        .limit(1);
+        .values({ uuid: idx, name, belong_to: userID });
 
       return {
         success: true,
         data: {
           message: "purpose created successfully",
-          data: data as GetPurposeResponse[],
+          data: idx,
           status: Status.OK,
         },
       };
@@ -73,7 +68,7 @@ export const PurposeManager = {
       };
     }
   },
-  async delete(props: DeletePurpose): Promise<Response<GetPurposeResponse[]>> {
+  async delete(props: DeletePurpose): Promise<Response<boolean>> {
     try {
       const { purposeID, userID } = props;
 
@@ -81,7 +76,7 @@ export const PurposeManager = {
         .delete(purpose)
         .where(
           and(
-            eq(purpose.id, purposeID),
+            eq(purpose.uuid, purposeID),
             eq(purpose.belong_to, userID)
           )
         );
@@ -90,7 +85,7 @@ export const PurposeManager = {
         success: true,
         data: {
           message: "purpose deleted successfully",
-          data: [],
+          data: true,
           status: Status.OK,
         },
       };
@@ -104,7 +99,7 @@ export const PurposeManager = {
       };
     }
   },
-  async update(props: UpdatePurpose): Promise<Response<GetPurposeResponse[]>> {
+  async update(props: UpdatePurpose): Promise<Response<string>> {
     try {
       const { name, purposeID, userID } = props;
 
@@ -113,18 +108,7 @@ export const PurposeManager = {
         .set({ name })
         .where(
           and(
-            eq(purpose.id, purposeID),
-            eq(purpose.belong_to, userID)
-          )
-        );
-
-      // Get the updated purpose
-      const data = await db
-        .select()
-        .from(purpose)
-        .where(
-          and(
-            eq(purpose.id, purposeID),
+            eq(purpose.uuid, purposeID),
             eq(purpose.belong_to, userID)
           )
         );
@@ -133,7 +117,7 @@ export const PurposeManager = {
         success: true,
         data: {
           message: "purpose updated successfully",
-          data: data as GetPurposeResponse[],
+          data: purposeID,
           status: Status.OK,
         },
       };
