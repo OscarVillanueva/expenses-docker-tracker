@@ -4,6 +4,7 @@ import { relations } from 'drizzle-orm';
 // Purpose table schema
 export const purpose = mysqlTable('purpose', {
   id: int('id').primaryKey().autoincrement(),
+  uuid: varchar('uuid', { length: 36 }).notNull().unique(),
   name: varchar('name', { length: 255 }).notNull(),
   total: decimal('total', { precision: 10, scale: 2 }).notNull().default('0'),
   belong_to: varchar('belong_to', { length: 255 }).notNull(),
@@ -24,6 +25,7 @@ export const transaction = mysqlTable('transaction', {
 // Accumulated table schema
 export const accumulated = mysqlTable('accumulated', {
   id: int('id').primaryKey().autoincrement(),
+  uuid: varchar('uuid', { length: 36 }).notNull().unique(),
   name: varchar('name', { length: 255 }).notNull(),
   total: decimal('total', { precision: 10, scale: 2 }).notNull(),
   belong_to: varchar('belong_to', { length: 255 }).notNull(),

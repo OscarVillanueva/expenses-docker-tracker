@@ -1,5 +1,6 @@
 import { Status } from "jsr:@oak/commons@1/status";
-import { eq, and, desc } from 'drizzle-orm';
+import * as uuid from "jsr:@std/uuid";
+import { eq, and } from 'drizzle-orm';
 import { db } from "./config.ts"
 import { accumulated } from "./schema.ts";
 import { Response } from "../types/Response.ts";
@@ -43,31 +44,26 @@ export const AccumulatedManager = {
   },
   async insert(
     props: CreateAccumulated
-  ): Promise<Response<GetAccumulatedResponse[]>> {
+  ): Promise<Response<string>> {
     try {
       const { name, total, userID } = props;
+
+      const gen = uuid.v1.generate()
 
       await db
         .insert(accumulated)
         .values({
+          uuid: gen,
           name,
           belong_to: userID,
           total: total.toString(),
         });
 
-      // Get the most recent accumulated record for this user
-      const data = await db
-        .select()
-        .from(accumulated)
-        .where(eq(accumulated.belong_to, userID))
-        .orderBy(desc(accumulated.id))
-        .limit(1);
-
       return {
         success: true,
         data: {
           message: "accumulated created successfully",
-          data: data as GetAccumulatedResponse[],
+          data: gen,
           status: Status.OK,
         },
       };
@@ -83,7 +79,7 @@ export const AccumulatedManager = {
   },
   async delete(
     props: DeleteAccumulated
-  ): Promise<Response<GetAccumulatedResponse[]>> {
+  ): Promise<Response<boolean>> {
     try {
       const { accumulatedID, userID } = props;
 
@@ -91,7 +87,7 @@ export const AccumulatedManager = {
         .delete(accumulated)
         .where(
           and(
-            eq(accumulated.id, accumulatedID),
+            eq(accumulated.uuid, accumulatedID),
             eq(accumulated.belong_to, userID)
           )
         );
@@ -100,7 +96,7 @@ export const AccumulatedManager = {
         success: true,
         data: {
           message: "accumulated deleted successfully",
-          data: [],
+          data: true,
           status: Status.OK,
         },
       };
@@ -116,7 +112,7 @@ export const AccumulatedManager = {
   },
   async update(
     props: UpdateAccumulated
-  ): Promise<Response<GetAccumulatedResponse[]>> {
+  ): Promise<Response<string>> {
     try {
       const { name, accumulatedID, total, userID } = props;
 
@@ -125,18 +121,7 @@ export const AccumulatedManager = {
         .set({ name, total: total.toString() })
         .where(
           and(
-            eq(accumulated.id, accumulatedID),
-            eq(accumulated.belong_to, userID)
-          )
-        );
-
-      // Get the updated accumulated record
-      const data = await db
-        .select()
-        .from(accumulated)
-        .where(
-          and(
-            eq(accumulated.id, accumulatedID),
+            eq(accumulated.uuid, accumulatedID),
             eq(accumulated.belong_to, userID)
           )
         );
@@ -145,7 +130,7 @@ export const AccumulatedManager = {
         success: true,
         data: {
           message: "accumulated updated successfully",
-          data: data as GetAccumulatedResponse[],
+          data: accumulatedID,
           status: Status.OK,
         },
       };

@@ -1,4 +1,5 @@
 import { Router, Status } from "@oak/oak";
+import * as uuid from "jsr:@std/uuid";
 import { AccumulatedManager } from "../db/AccumulatedManager.ts";
 import { validate } from "../utils/validate.ts";
 import { AccumulatedSchema } from "../validation/AccumulatedSchema.ts";
@@ -39,7 +40,13 @@ router.post("/accumulated", async (ctx) => {
 });
 
 router.delete("/accumulated/:id", async (ctx) => {
-  const id = isNaN(Number(ctx.params.id)) ? 0 : Number(ctx.params.id);
+  if(!uuid.validate(ctx.params.id)) {
+    ctx.response.status = Status.BadRequest
+    ctx.response.body = "Invalid uuid"
+    return
+  }
+
+  const id = ctx.params.id;
   const { user } = ctx.state;
 
   const response = await AccumulatedManager.delete({
@@ -52,9 +59,14 @@ router.delete("/accumulated/:id", async (ctx) => {
 });
 
 router.put("/accumulated/:id", async (ctx) => {
+  if(!uuid.validate(ctx.params.id)) {
+    ctx.response.status = Status.BadRequest
+    ctx.response.body = "Invalid uuid"
+    return
+  }
+
   const { user } = ctx.state;
   const body = await ctx.request.body.json();
-  const id = isNaN(Number(ctx.params.id)) ? 0 : Number(ctx.params.id);
 
   const validation = validate({ data: body, schema: AccumulatedSchema });
 
@@ -67,7 +79,7 @@ router.put("/accumulated/:id", async (ctx) => {
   const response = await AccumulatedManager.update({
     name: body.name,
     total: body.total,
-    accumulatedID: id,
+    accumulatedID: ctx.params.id,
     userID: user.sub,
   });
 

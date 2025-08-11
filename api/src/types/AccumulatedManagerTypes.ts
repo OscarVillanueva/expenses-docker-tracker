@@ -5,6 +5,7 @@ export type GetAccumulated = {
 
 export interface GetAccumulatedResponse {
   id: number;
+  uuid: string;
   total: string; // Drizzle returns decimal as string
   belong_to: string;
   created_at: Date | null;
@@ -20,14 +21,6 @@ export type CreateAccumulated = {
 
 // Delete: Accumulated
 export type DeleteAccumulated = {
-  accumulatedID: number;
-  userID: string;
-};
-
-// Update: Accumulated
-export type UpdateAccumulated = {
-  name: string;
-  total: number;
-  accumulatedID: number;
+  accumulatedID: string;
   userID: string;
 };
