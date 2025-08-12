@@ -1,4 +1,5 @@
 import { Status } from "jsr:@oak/commons@1/status";
+import * as uuid from "jsr:@std/uuid";
 import { eq, and, desc } from 'drizzle-orm';
 import { db } from "./config.ts"
 import { transaction, purpose } from "./schema.ts";
@@ -52,7 +53,7 @@ export const TransactionManager = {
         .where(
           and(
             eq(purpose.belong_to, userID),
-            eq(purpose.id, transactionData.included_in)
+            eq(purpose.uuid, transactionData.included_in)
           )
         );
 
@@ -65,33 +66,27 @@ export const TransactionManager = {
           },
         };
       }
+      
+      const idx = uuid.v1.generate()
 
       // Insert the transaction
       await db
         .insert(transaction)
         .values({
           date: new Date(transactionData.date),
+          uuid: idx,
           is_expense: transactionData.is_expense,
           name: transactionData.name,
           amount: transactionData.amount.toString(),
-          included_in: transactionData.included_in,
+          included_in: existingPurpose[0].id,
           is_cash: transactionData.is_cash,
         });
-
-      // Get the most recently inserted transaction for this user
-      const result = await db
-        .select()
-        .from(transaction)
-        .innerJoin(purpose, eq(transaction.included_in, purpose.id))
-        .where(eq(purpose.belong_to, userID))
-        .orderBy(desc(transaction.id))
-        .limit(1);
 
       return {
         success: true,
         data: {
           message: "transaction created successfully",
-          data: result as unknown as Transaction[],
+          data: idx,
           status: Status.OK,
         },
       };
@@ -105,7 +100,7 @@ export const TransactionManager = {
       };
     }
   },
-  async delete(props: DeleteTransaction): Promise<Response<GetTransaction[]>> {
+  async delete(props: DeleteTransaction): Promise<Response<boolean>> {
     try {
       const { userID, transactionID } = props;
 
@@ -116,7 +111,7 @@ export const TransactionManager = {
         .innerJoin(purpose, eq(transaction.included_in, purpose.id))
         .where(
           and(
-            eq(transaction.id, transactionID),
+            eq(transaction.uuid, transactionID),
             eq(purpose.belong_to, userID)
           )
         );
@@ -134,13 +129,13 @@ export const TransactionManager = {
       // Delete the transaction
       await db
         .delete(transaction)
-        .where(eq(transaction.id, transactionID));
+        .where(eq(transaction.uuid, transactionID));
 
       return {
         success: true,
         data: {
           message: "transaction deleted successfully",
-          data: [],
+          data: true,
           status: Status.OK,
         },
       };

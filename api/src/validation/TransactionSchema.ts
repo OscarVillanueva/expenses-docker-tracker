@@ -6,8 +6,5 @@ export const TransactionSchema = z.object({
   name: z.string().min(3, "The expense name at least 3 characters"),
   amount: z.number().min(1, "The minimum amount is 1"),
   is_cash: z.boolean(),
-  included_in: z
-    .number()
-    .int("Should be included in a purpose")
-    .min(1, "Should be included in a purpose"),
+  included_in: z.string().uuid({ version: "v1" })
 });

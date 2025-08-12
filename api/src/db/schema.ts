@@ -14,6 +14,7 @@ export const purpose = mysqlTable('purpose', {
 // Transaction table schema
 export const transaction = mysqlTable('transaction', {
   id: int('id').primaryKey().autoincrement(),
+  uuid: varchar('uuid', { length: 36 }).notNull().unique(),
   date: datetime('date').notNull(),
   is_expense: boolean('is_expense').notNull(),
   name: varchar('name', { length: 255 }).notNull(),

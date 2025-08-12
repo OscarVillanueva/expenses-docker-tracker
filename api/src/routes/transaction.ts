@@ -1,4 +1,5 @@
-import { Router } from "@oak/oak";
+import { Router, Status } from "@oak/oak";
+import * as uuid from "jsr:@std/uuid";
 import { TransactionManager } from "../db/TransactionManager.ts";
 import { validate } from "../utils/validate.ts";
 import { TransactionSchema } from "../validation/TransactionSchema.ts";
@@ -38,11 +39,16 @@ router.post("/transaction", async (ctx: any) => {
 });
 
 router.delete("/transaction/:id", async (ctx: any) => {
-  const id = isNaN(Number(ctx.params.id)) ? 0 : Number(ctx.params.id);
+  if(!uuid.validate(ctx.params.id)) {
+    ctx.response.status = Status.BadRequest
+    ctx.response.body = "Invalid uuid"
+    return
+  }
+
   const { user } = ctx.state;
 
   const response = await TransactionManager.delete({
-    transactionID: id,
+    transactionID: ctx.params.id,
     userID: user.sub,
   });
 

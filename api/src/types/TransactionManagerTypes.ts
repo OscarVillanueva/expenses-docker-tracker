@@ -18,7 +18,7 @@ export type Transaction = {
   is_expense: boolean;
   name: string;
   amount: number;
-  included_in: number;
+  included_in: string;
   is_cash: boolean;
 };
 
@@ -34,5 +34,5 @@ export type CreateTransaction = {
 
 export type DeleteTransaction = {
   userID: string;
-  transactionID: number;
+  transactionID: string;
 }
