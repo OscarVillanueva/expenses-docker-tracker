@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@plugin "@iconify/tailwind4" {
+  prefix: "iconify";
+  prefixes: lucide, mdi;
+	scale: 1.3; /* optional sizing */
+}
+
 @theme {  
   --font-display: var(--font-raleway), sans-serif; 
+  --color-main: #171821;
+  --color-secondary: #21222D;
 }
