@@ -1,0 +1,10 @@
+---
+const { name, date, withBackground, amount, isExpense, isCash} = Astro.props
+---
+
+<div class=`grid grid-cols-4 px-2 py-1 ${withBackground && 'bg-secondary'}`>
+  <p>{name}</p>
+  <p class = `${isExpense ? 'text-red-500' : 'text-green-500'}`>${amount}</p>
+  <p>{date}</p>
+  <span class=`iconify ${isCash ? 'lucide--coins' : 'lucide--credit-card'}`></span>
+</div>
