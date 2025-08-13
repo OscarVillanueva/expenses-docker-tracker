@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.62",
-    "@iconify-json/mdi": "^1.2.3",
     "@iconify/tailwind4": "^1.0.6"
   }
 }

@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Welcome from '../components/Welcome.astro';
-import Purpose from '../components/Purpose.astro'
+import PurposeList from '../components/PurposeList.astro';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
@@ -11,14 +11,6 @@ import Purpose from '../components/Purpose.astro'
 	<Welcome />
 
   <main class = "p-4">
-    <section>
-      <h2 class = "text-2xl my-4 border-l border-l-2 border-gray-300 pl-2">Purposes</h2>
-
-      <div class = "ml-2 pb-4 flex items-center gap-4 overflow-x-auto">
-        <Purpose />
-        <Purpose />
-        <Purpose />
-      </div>
-    </section>
+    <PurposeList />
   </main>
 </Layout>
