@@ -4,6 +4,7 @@ import Welcome from '../components/Welcome.astro';
 import PurposeList from '../components/PurposeList.astro';
 import Transactions from '../components/Transactions.astro';
 import Comparative from '../components/Comparative.astro'
+import AccumulatedList from '../components/AccumulatedList.astro'
 ---
 
 <Layout>
@@ -14,7 +15,11 @@ import Comparative from '../components/Comparative.astro'
 
     <section class = "grid grid-cols-2">
       <Transactions />
-      <Comparative />
+
+      <div>
+        <Comparative />
+        <AccumulatedList />
+      </div>
     </section>
   </main>
 </Layout>
