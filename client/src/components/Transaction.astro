@@ -1,10 +1,22 @@
 ---
-const { name, date, withBackground, amount, isExpense, isCash} = Astro.props
+import IconButton from './IconButton.astro'
 ---
 
-<div class=`grid grid-cols-4 px-2 py-1 ${withBackground && 'bg-secondary'}`>
-  <p>{name}</p>
-  <p class = `${isExpense ? 'text-red-500' : 'text-green-500'}`>${amount}</p>
-  <p>{date}</p>
-  <span class=`iconify ${isCash ? 'lucide--coins' : 'lucide--credit-card'}`></span>
+<div class = "flex items-center justify-between bg-secondary mb-3 p-4 rounded-md relative">
+  <div class = "absolute top-1 right-1">
+    <IconButton iconName = "lucide--trash-2 text-sm"/>
+  </div>
+
+
+  <div class="flex items-center gap-4">
+    <span class = "iconify lucide--coins text-3xl bg-blue-300"/>
+
+    <div>
+      <p class = "text-xl">Ingreso para tatuaje</p>
+      <small class="block text-gray-400">20 Jun 2025</small>
+      <small class = "font-light text-gray-400">Tattoo</small>
+    </div>
+  </div>
+
+  <h4 class = "text-accent text-2xl font-bold">+ $ 1200</h4>
 </div>

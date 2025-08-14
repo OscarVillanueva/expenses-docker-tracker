@@ -10,26 +10,17 @@ import IconButton from './IconButton.astro'
     <IconButton iconName = "lucide--circle-plus text-2xl"/>
   </div>
 
-  <div class='grid grid-cols-4 bg-secondary px-2 py-1 rounded-md'>
-    <p>Name</p>
-    <p>Amount</p>
-    <p>Date</p>
-    <p>Type</p>
-  </div>
-
   <Transaction 
     name = "Pago de quina"
     date = "20 Jun 2025"
     amount = "1200"
     isCash 
   />
-  
+
   <Transaction 
-    name = "Impuestos"
+    name = "Pago de quina"
     date = "20 Jun 2025"
     amount = "1200"
-    withBackground
-    isExpense
-    isCash = {false}
+    isCash 
   />
 </article>

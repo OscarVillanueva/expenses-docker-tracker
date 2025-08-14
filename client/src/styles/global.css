@@ -2,7 +2,7 @@
 
 @plugin "@iconify/tailwind4" {
   prefix: "iconify";
-  prefixes: lucide, mdi;
+  prefixes: lucide;
 	scale: 1.3; /* optional sizing */
 }
 
@@ -10,4 +10,6 @@
   --font-display: var(--font-raleway), sans-serif; 
   --color-main: #171821;
   --color-secondary: #21222D;
+  --color-accent: #25A969;
+  --color-expense: #F95B51;
 }
