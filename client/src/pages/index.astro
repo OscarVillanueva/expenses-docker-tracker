@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Welcome from '../components/Welcome.astro';
 import PurposeList from '../components/PurposeList.astro';
 import Transactions from '../components/Transactions.astro';
+import Comparative from '../components/Comparative.astro'
 ---
 
 <Layout>
@@ -13,7 +14,7 @@ import Transactions from '../components/Transactions.astro';
 
     <section class = "grid grid-cols-2">
       <Transactions />
-      <div>2</div>
+      <Comparative />
     </section>
   </main>
 </Layout>
