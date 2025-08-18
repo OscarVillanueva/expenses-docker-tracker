@@ -18,7 +18,7 @@ const { title, id } = Astro.props
     <input 
       id = `purpose-input-${id}`
       disabled = "true" 
-      class="text-2xl font-bold outline-none" 
+      class="text-2xl font-bold outline-none border border-transparent rounded-md" 
       type = "text" 
       value = "4000"
     />
@@ -34,9 +34,22 @@ if (btnEdit)
   btnEdit.addEventListener("click", () => {
     if(!input) return
 
-    if(input.getAttribute("disabled"))
+    if(input.getAttribute("disabled")) { // Edit action
+      input.classList.remove("border-transparent")
+      input.classList.add("border-gray-300")
       input.removeAttribute("disabled")
-    else input.setAttribute("disabled", "true")
+
+      btnEdit.querySelector("span").classList.remove("lucide--edit-3")
+      btnEdit.querySelector("span").classList.add("lucide--save")
+    }
+    else { // Save action
+      input.setAttribute("disabled", "true")
+      input.classList.remove("border-gray-300")
+      input.classList.add("border-transparent")
+
+      btnEdit.querySelector("span").classList.remove("lucide--save")
+      btnEdit.querySelector("span").classList.add("lucide--edit-3")
+    }
   })
 
 if (btnRemove)
