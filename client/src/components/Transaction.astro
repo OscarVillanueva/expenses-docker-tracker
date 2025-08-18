@@ -1,14 +1,19 @@
 ---
 import IconButton from './IconButton.astro'
+
+const { id, name } = Astro.props
 ---
 
 <div class = "flex items-center justify-between bg-secondary mb-3 p-4 rounded-md relative">
 
   <div class="flex items-center gap-4">
-    <IconButton iconName = "lucide--coins hover:lucide--trash-2 text-3xl bg-blue-300" />
+    <IconButton 
+      id = `transaction-remove-${id}`
+      iconName = "lucide--coins hover:lucide--trash-2 text-3xl bg-blue-300" 
+    />
     
     <div>
-      <p class = "text-xl">Ingreso para tatuaje</p>
+      <p class = "text-xl">{name}</p>
       <small class="block text-gray-400">20 Jun 2025</small>
       <small class = "font-light text-gray-400">Tattoo</small>
     </div>
@@ -16,3 +21,14 @@ import IconButton from './IconButton.astro'
 
   <h4 class = "text-accent text-2xl font-bold">+ $ 1200</h4>
 </div>
+
+<script define:vars = {{ id, name }}>
+const btnRemove = document.querySelector(`button#icon-button-transaction-remove-${id}`)
+
+if(btnRemove)
+  btnRemove.addEventListener("click", (e) => {
+    if(confirm(`Delete this transaction: ${name}`))
+      e.target.parentElement.parentElement.parentElement.remove()
+  })
+
+</script>
