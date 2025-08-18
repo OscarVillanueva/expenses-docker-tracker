@@ -1,8 +1,7 @@
 ---
-const { iconName } = Astro.props
+const { iconName, id } = Astro.props
 ---
-
-<button>
+<button id = `icon-button-${id}`>
   <span class=`iconify ${iconName} text-gray-400 hover:text-white hover:cursor-pointer transition-colors duration-500 ease-in-out`>
   </span>
 </button>
