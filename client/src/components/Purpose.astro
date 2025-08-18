@@ -5,7 +5,12 @@ const { title, id } = Astro.props
 ---
 <article id = `purpose-${id}` class="bg-secondary rounded-md p-4 basis-full">
   <div class = "flex items-center justify-between">
-    <h3 class = "text-xl text-gray-400">{title}</h3>
+    <input 
+      id = `purpose-input-${id}`
+      value = { title }
+      disabled = "true"
+      class = "text-xl text-gray-400 outline-none border border-transparent rounded-md"
+    />
 
     <div class = "flex items-center gap-2">
       <IconButton iconName = "lucide--edit-3" id = `purpose-edit-${id}`/>
@@ -13,16 +18,7 @@ const { title, id } = Astro.props
     </div>
   </div>
 
-  <div>
-    <span class = "text-2xl">$</span>
-    <input 
-      id = `purpose-input-${id}`
-      disabled = "true" 
-      class="text-2xl font-bold outline-none border border-transparent rounded-md" 
-      type = "text" 
-      value = "4000"
-    />
-  </div>
+  <p class = "text-2xl font-bold">$4000</p>
 </article>
 
 <script define:vars = {{ id }}>
