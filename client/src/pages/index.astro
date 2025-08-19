@@ -1,24 +1,24 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Welcome from '../components/Welcome.astro';
-import PurposeList from '../components/PurposeList.astro';
-import Transactions from '../components/Transactions.astro';
-import Comparative from '../components/Comparative.astro'
-import AccumulatedList from '../components/AccumulatedList.astro'
+import Welcome from '../components/Welcome.tsx';
+import PurposeList from '../components/PurposeList.tsx';
+import Transactions from '../components/Transactions.tsx';
+import Comparative from '../components/Comparative.tsx';
+import AccumulatedList from '../components/AccumulatedList.tsx';
 ---
 
 <Layout>
-	<Welcome />
+  <Welcome />
 
-  <main class = "p-4">
-    <PurposeList />
+  <main class="p-4">
+    <PurposeList client:load/>
 
-    <section class = "grid grid-cols-2">
-      <Transactions />
+    <section class="grid grid-cols-2 gap-4">
+      <Transactions client:load />
 
       <div>
-        <Comparative />
-        <AccumulatedList />
+        <Comparative client:load/>
+        <AccumulatedList client:load />
       </div>
     </section>
   </main>
