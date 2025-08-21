@@ -1,6 +1,7 @@
 import { type FC, useState } from 'react';
 import Transaction from './Transaction';
 import IconButton from './IconButton';
+import { CreateTransactionModal } from './CreateTransactionModal'
 
 interface TransactionItem {
   id: string;
@@ -33,28 +34,11 @@ const Transactions: FC<TransactionsProps> = ({
       isCash: true
     }
   ],
-  onAddTransaction 
 }) => {
   const [transactionList, setTransactionList] = useState<TransactionItem[]>(transactions);
+  const [open, setOpen] = useState(false)
 
-  const handleAddTransaction = () => {
-    if (onAddTransaction) {
-      onAddTransaction();
-    } else {
-      // Default behavior: add a new transaction
-      const newTransaction: TransactionItem = {
-        id: Date.now().toString(),
-        name: "New Transaction",
-        date: new Date().toLocaleDateString('en-GB', { 
-          day: '2-digit', 
-          month: 'short', 
-          year: 'numeric' 
-        }),
-        amount: "+ $ 0",
-        isCash: true
-      };
-      setTransactionList(prev => [...prev, newTransaction]);
-    }
+  const handleAddTransaction = async () => {
   };
 
   const handleRemoveTransaction = (id: string) => {
@@ -62,30 +46,38 @@ const Transactions: FC<TransactionsProps> = ({
   };
 
   return (
-    <article className="h-[70vh] overflow-y-auto">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl my-4 border-l border-l-2 border-gray-300 pl-2">Transactions</h2>
+    <>
+      <CreateTransactionModal 
+        open = { open }
+        onClose = {() => setOpen(prev => !prev)}
+        action = {handleAddTransaction}
+      />
 
-        <IconButton 
-          iconName="lucide--circle-plus text-2xl" 
-          id="add-transaction"
-          onClick={handleAddTransaction}
-        />
-      </div>
+      <article className="h-[70vh] overflow-y-auto">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl my-4 border-l border-l-2 border-gray-300 pl-2">Transactions</h2>
 
-      {transactionList.map(transaction => (
-        <Transaction
-          key={transaction.id}
-          id={transaction.id}
-          name={transaction.name}
-          date={transaction.date}
-          amount={transaction.amount}
-          purpose={transaction.purpose}
-          isCash={transaction.isCash}
-          onRemove={handleRemoveTransaction}
-        />
-      ))}
-    </article>
+          <IconButton 
+            iconName="lucide--circle-plus text-2xl" 
+            id="add-transaction"
+            onClick={() => setOpen(prev => !prev)}
+          />
+        </div>
+
+        {transactionList.map(transaction => (
+          <Transaction
+            key={transaction.id}
+            id={transaction.id}
+            name={transaction.name}
+            date={transaction.date}
+            amount={transaction.amount}
+            purpose={transaction.purpose}
+            isCash={transaction.isCash}
+            onRemove={handleRemoveTransaction}
+          />
+        ))}
+      </article>
+    </>
   );
 };
 

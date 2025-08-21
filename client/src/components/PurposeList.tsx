@@ -23,16 +23,8 @@ const PurposeList: FC<PurposeListProps> = ({
   const [purposeList, setPurposeList] = useState<PurposeItem[]>(purposes);
 
   const handleAddPurpose = () => {
-    if (onAddPurpose) {
-      onAddPurpose();
-    } else {
-      // Default behavior: add a new purpose
-      const newPurpose: PurposeItem = {
-        id: Date.now().toString(),
-        title: "New Purpose"
-      };
-      setPurposeList(prev => [...prev, newPurpose]);
-    }
+    const result = prompt("Name of the purpose")
+    console.log({result})
   };
 
   const handleRemovePurpose = (id: string) => {
