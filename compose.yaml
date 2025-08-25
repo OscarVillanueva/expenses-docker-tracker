@@ -38,6 +38,14 @@ services:
       timeout: 5s
       retries: 10
 
+  client: 
+    container_name: astro-client
+    build:
+      context: ./client
+    labels:
+      traefik.http.routers.client.rule: Host(`client.localhost`)
+      traefik.http.services.client.loadbalancer.server.port: 4321
+
   phpmyadmin:
     image: phpmyadmin
     env_file:
