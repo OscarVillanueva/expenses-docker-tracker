@@ -42,6 +42,12 @@ services:
     container_name: astro-client
     build:
       context: ./client
+      target: development
+    develop:
+      watch:
+        - path: ./client/src
+          action: sync
+          target: ./app/src
     labels:
       traefik.http.routers.client.rule: Host(`client.localhost`)
       traefik.http.services.client.loadbalancer.server.port: 4321

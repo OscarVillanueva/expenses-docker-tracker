@@ -1,16 +1,22 @@
 # Use alpine node base image
-FROM node:latest
+FROM node:latest AS base
 
 # Set working directory inside the docker node
 WORKDIR /app
 
-# Copy package files and install dependencies
 COPY . .
 RUN npm install
-RUN npm run build
 
-# Expose the application port
+# prod stage
+FROM base AS production
+
+RUN npm run build
 EXPOSE 4321
 
-# Command to run node.js in a docker container
 CMD ["npm", "run", "preview"]
+
+# dev stage
+FROM base AS  development
+
+EXPOSE 4321
+CMD ["npm", "run", "dev"]
