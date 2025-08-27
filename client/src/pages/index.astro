@@ -5,6 +5,11 @@ import PurposeList from '../components/PurposeList.tsx';
 import Transactions from '../components/Transactions.tsx';
 import Comparative from '../components/Comparative.tsx';
 import AccumulatedList from '../components/AccumulatedList.tsx';
+import { fetchAccumulated } from '../utils/fetchAccumulated'
+
+const prerender = false
+const acc = await fetchAccumulated()
+console.log("resp", acc)
 ---
 
 <Layout>

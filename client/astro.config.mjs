@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig, fontProviders, envField } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
@@ -16,7 +16,11 @@ export default defineConfig({
       cssVariable: "--font-raleway"
     }]
   },
-
+  env: {
+    schema: {
+      API_KEY: envField.string({ context: "server", access: "secret" }) 
+    }
+  },
   vite: {
     plugins: [tailwindcss()]
   },
