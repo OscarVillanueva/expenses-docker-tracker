@@ -30,7 +30,6 @@ const PieChart: FC<PieChartProps> = ({
   };
 
   useLayoutEffect(() => {
-    console.log(chartRef.current)
     if (!chartRef.current) return;
 
     const ctx = chartRef.current;

@@ -3,11 +3,12 @@ import IconButton from './IconButton';
 
 interface AccumulatedProps {
   id: string;
-  initialValue?: string;
+  title: string
+  initialValue: string;
   onSave: (id: string, newValue: string) => void;
 }
 
-const Accumulated: FC<AccumulatedProps> = ({ id, initialValue = "$4000", onSave }) => {
+const Accumulated: FC<AccumulatedProps> = ({ id, initialValue, title,onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState(initialValue);
 
@@ -30,19 +31,22 @@ const Accumulated: FC<AccumulatedProps> = ({ id, initialValue = "$4000", onSave 
     <div className="w-full mt-4 p-4 bg-secondary rounded-lg flex items-center justify-between">
       <div>
         <h2 className="text-xl">
-          Accumulated
+          {title}
         </h2>
 
-        <input
-          id={`acc-input-${id}`}
-          type="text"
-          disabled={!isEditing}
-          className={`text-2xl font-bold border outline-none rounded-md ${
-            isEditing ? 'border-gray-500' : 'border-transparent'
-          }`}
-          value={inputValue}
-          onChange={handleInputChange}
-        />
+        <div className="flex items-center gap-1">
+          <p className = "text-2xl font-bold">$</p>
+          <input
+            id={`acc-input-${id}`}
+            type="text"
+            disabled={!isEditing}
+            className={`text-2xl font-bold border outline-none rounded-md ${
+              isEditing ? 'border-gray-500' : 'border-transparent'
+            }`}
+            value={inputValue}
+            onChange={handleInputChange}
+          />
+        </div>
       </div>
 
       <IconButton

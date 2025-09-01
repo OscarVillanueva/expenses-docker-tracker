@@ -9,7 +9,7 @@ import { fetchAccumulated } from '../utils/fetchAccumulated'
 
 const prerender = false
 const acc = await fetchAccumulated()
-console.log("resp", acc)
+const totalAcc = acc.data.data.reduce((acc, current) => acc + Number(current.total) ,0)
 ---
 
 <Layout>
@@ -22,8 +22,8 @@ console.log("resp", acc)
       <Transactions client:only="react" />
 
       <div>
-        <Comparative client:load/>
-        <AccumulatedList client:load />
+        <Comparative client:load accumulated = {totalAcc}/>
+        <AccumulatedList client:load items = {acc.data}/>
       </div>
     </section>
   </main>

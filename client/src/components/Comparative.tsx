@@ -7,13 +7,11 @@ interface ComparativeData {
 }
 
 interface ComparativeProps {
-  data?: ComparativeData;
+  accumulated: number
 }
 
-const Comparative: FC<ComparativeProps> = ({ 
-  data = { accumulated: 300, purposes: 50 },
-}) => {
-  const chartData = [data.accumulated, data.purposes];
+const Comparative: FC<ComparativeProps> = ({ accumulated }) => {
+  const chartData = [accumulated, 8000];
 
   return (
     <div className="py-2 px-4">
@@ -31,7 +29,7 @@ const Comparative: FC<ComparativeProps> = ({
               Accumulated
             </p>
           </div>
-          <p className="text-center text-xl font-light">{data.accumulated}</p>
+          <p className="text-center text-xl font-light">{accumulated}</p>
         </div>
 
         <div>
@@ -41,7 +39,7 @@ const Comparative: FC<ComparativeProps> = ({
               Purpose
             </p>
           </div>
-          <p className="text-center text-xl font-light">{data.purposes}</p>
+          <p className="text-center text-xl font-light">{8000}</p>
         </div>
       </div>
     </div>

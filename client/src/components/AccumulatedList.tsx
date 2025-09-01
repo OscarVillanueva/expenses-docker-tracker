@@ -1,40 +1,22 @@
-import { type FC, useState } from 'react';
+import { type FC } from 'react';
+import { type AccumulatedResponse } from '../types/AccumulatedResponse'
 import Accumulated from './Accumulated';
 
-interface AccumulatedItem {
-  id: string;
-  value: string;
-}
-
 interface AccumulatedListProps {
-  items?: AccumulatedItem[];
+  items: AccumulatedResponse
 }
 
-const AccumulatedList: FC<AccumulatedListProps> = ({ 
-  items = [
-    { id: "ee54cf33-bb86-4799-99e5-a5c60f60b6db", value: "$4000" }
-  ]
-}) => {
-  const [accumulatedItems, setAccumulatedItems] = useState<AccumulatedItem[]>(items);
-
-  const handleSave = (id: string, newValue: string) => {
-    setAccumulatedItems(prev => 
-      prev.map(item => 
-        item.id === id 
-          ? { ...item, value: newValue }
-          : item
-      )
-    );
-  };
+const AccumulatedList: FC<AccumulatedListProps> = ({ items }) => {
 
   return (
     <>
-      {accumulatedItems.map(item => (
+      {items.data.map(item => (
         <Accumulated
           key={item.id}
-          id={item.id}
-          initialValue={item.value}
-          onSave={handleSave}
+          id={item.uuid}
+          title={item.name}
+          initialValue={item.total}
+          onSave={() => {}}
         />
       ))}
     </>
