@@ -4,11 +4,12 @@ import IconButton from './IconButton';
 interface PurposeProps {
   title: string;
   id: string;
+  total: string;
   onRemove: (id: string) => void;
   onSave: (id: string, newTitle: string) => void;
 }
 
-const Purpose: FC<PurposeProps> = ({ title, id, onRemove, onSave }) => {
+const Purpose: FC<PurposeProps> = ({ title, id, total, onRemove, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState(title);
 
@@ -62,7 +63,7 @@ const Purpose: FC<PurposeProps> = ({ title, id, onRemove, onSave }) => {
         </div>
       </div>
 
-      <p className="text-2xl font-bold">$4000</p>
+      <p className="text-2xl font-bold">${total}</p>
     </article>
   );
 };

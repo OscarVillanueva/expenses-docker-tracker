@@ -1,12 +1,12 @@
 import { create } from 'zustand'
 import { type Purpose } from '../types/PurposeResponse'
 
-type AccumulatedState = {
+type PurposeState = {
   list: Purpose[]
   setList: (list: Purpose[]) => void
 }
 
-export const accumulatedState = create<AccumulatedState>((set) => ({
+export const purposeState = create<PurposeState>((set) => ({
   list: [],
   setList: (list: Purpose[]) => set({ list })
 }))

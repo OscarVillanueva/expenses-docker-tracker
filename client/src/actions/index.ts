@@ -26,5 +26,27 @@ export const server = {
         return null
       }
     }
+  }),
+  createPurpose: defineAction({
+    input: z.object({
+      name: z.string()
+    }),
+    handler: async ({ name }) => {
+      try {
+        const raw = await fetch(`http://backend:8000/purpose`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Basic ${API_KEY}`
+          },
+          body: JSON.stringify({ name })
+        })
+
+        const json = await raw.json()
+        return json
+      } catch (error) {
+        console.log(error)
+        return null
+      }
+    }
   })
 }
