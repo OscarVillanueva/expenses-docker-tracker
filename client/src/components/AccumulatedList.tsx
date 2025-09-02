@@ -1,5 +1,6 @@
 import { type FC } from 'react';
 import { type AccumulatedResponse } from '../types/AccumulatedResponse'
+import { accumulatedState } from '../state/accumulatedState'
 import Accumulated from './Accumulated';
 
 interface AccumulatedListProps {
@@ -7,6 +8,11 @@ interface AccumulatedListProps {
 }
 
 const AccumulatedList: FC<AccumulatedListProps> = ({ items }) => {
+  const updateAcc = accumulatedState(state => state.updateAccumulated)
+
+  const handleUpdateAcc = (id: string, value: string) => {
+    updateAcc(Number(value))
+  }
 
   return (
     <>
@@ -16,7 +22,7 @@ const AccumulatedList: FC<AccumulatedListProps> = ({ items }) => {
           id={item.uuid}
           title={item.name}
           initialValue={item.total}
-          onSave={() => {}}
+          onSave={handleUpdateAcc}
         />
       ))}
     </>

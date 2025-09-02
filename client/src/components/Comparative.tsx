@@ -1,17 +1,17 @@
-import { type FC } from 'react';
+import { type FC, useEffect } from 'react';
 import PieChart from './PieChart';
-
-interface ComparativeData {
-  accumulated: number;
-  purposes: number;
-}
+import { accumulatedState } from '../state/accumulatedState' 
 
 interface ComparativeProps {
   accumulated: number
 }
 
 const Comparative: FC<ComparativeProps> = ({ accumulated }) => {
-  const chartData = [accumulated, 8000];
+  const acc = accumulatedState(state => state)
+
+  useEffect(() => {
+    acc.updateAccumulated(accumulated)
+  }, [])
 
   return (
     <div className="py-2 px-4">
@@ -19,7 +19,7 @@ const Comparative: FC<ComparativeProps> = ({ accumulated }) => {
         Accumulated vs Purposes
       </h2>
 
-      <PieChart data={chartData} />
+      <PieChart data={[acc.accumulated, 8000]} />
 
       <div className="flex items-center justify-evenly">
         <div>
@@ -29,7 +29,7 @@ const Comparative: FC<ComparativeProps> = ({ accumulated }) => {
               Accumulated
             </p>
           </div>
-          <p className="text-center text-xl font-light">{accumulated}</p>
+          <p className="text-center text-xl font-light">{acc.accumulated}</p>
         </div>
 
         <div>
