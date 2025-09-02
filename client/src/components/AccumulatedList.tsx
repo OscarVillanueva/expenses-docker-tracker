@@ -1,4 +1,5 @@
 import { type FC, useEffect } from 'react';
+import { actions } from 'astro:actions';
 import { type AccumulatedResponse } from '../types/AccumulatedResponse'
 import { accumulatedState } from '../state/accumulatedState'
 import Accumulated from './Accumulated';
@@ -17,9 +18,21 @@ const AccumulatedList: FC<AccumulatedListProps> = ({ items }) => {
   }, [])
   
 
-  const handleUpdateAcc = (id: string, value: string) => {
-    const l = list.find(e => e.uuid === id)
-    updateAcc(Number(value))
+  const handleUpdateAcc = async (id: string, value: string) => {
+    const exits = list.find(e => e.uuid === id)
+
+    if (!exits) {
+      alert("The acc no exits")
+      return 
+    }
+
+    const response = await actions.updateAccumulated({ uuid: id, name: exits.name, total: Number(value) }) 
+
+    if (response) {
+      updateAcc(Number(value))
+      alert("Acc updated")
+    }
+    else alert("An error ocurrent")
   }
 
   return (
