@@ -6,9 +6,11 @@ import Transactions from '../components/Transactions.tsx';
 import Comparative from '../components/Comparative.tsx';
 import AccumulatedList from '../components/AccumulatedList.tsx';
 import { fetchAccumulated } from '../utils/fetchAccumulated'
+import { fetchPurposes } from '../utils/fetchPurposes'
 
-const prerender = false
-const acc = await fetchAccumulated()
+export const prerender = false
+const [acc, purposes] = await Promise.all([fetchAccumulated(), fetchPurposes()])
+
 const totalAcc = acc.data.data.reduce((acc, current) => acc + Number(current.total) ,0)
 ---
 
@@ -16,7 +18,7 @@ const totalAcc = acc.data.data.reduce((acc, current) => acc + Number(current.tot
   <Welcome />
 
   <main class="p-4">
-    <PurposeList client:load/>
+    <PurposeList client:load purposes = {purposes.data}/>
 
     <section class="grid grid-cols-2 gap-4">
       <Transactions client:only="react" />

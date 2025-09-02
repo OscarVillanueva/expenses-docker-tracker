@@ -1,44 +1,24 @@
 import { type FC, useState } from 'react';
 import Purpose from './Purpose';
 import IconButton from './IconButton';
-
-interface PurposeItem {
-  id: string;
-  title: string;
-}
+import { type PurposeData } from '../types/PurposeResponse'
 
 interface PurposeListProps {
-  purposes?: PurposeItem[];
+  purposes: PurposeData;
   onAddPurpose?: () => void;
 }
 
-const PurposeList: FC<PurposeListProps> = ({ 
-  purposes = [
-    { id: "123", title: "Tattoo" },
-    { id: "1234", title: "Tattoo 1" },
-    { id: "12345", title: "Tattoo 2" }
-  ],
-  onAddPurpose 
-}) => {
-  const [purposeList, setPurposeList] = useState<PurposeItem[]>(purposes);
-
+const PurposeList: FC<PurposeListProps> = ({ purposes }) => {
   const handleAddPurpose = () => {
     const result = prompt("Name of the purpose")
     console.log({result})
   };
 
   const handleRemovePurpose = (id: string) => {
-    setPurposeList(prev => prev.filter(purpose => purpose.id !== id));
   };
 
   const handleSavePurpose = (id: string, newTitle: string) => {
-    setPurposeList(prev => 
-      prev.map(purpose => 
-        purpose.id === id 
-          ? { ...purpose, title: newTitle }
-          : purpose
-      )
-    );
+
   };
 
   return (
@@ -54,11 +34,11 @@ const PurposeList: FC<PurposeListProps> = ({
       </div>
 
       <div className="ml-2 pb-4 flex items-center gap-4 overflow-x-auto">
-        {purposeList.map(purpose => (
+        {purposes.data.map(purpose => (
           <Purpose
             key={purpose.id}
-            title={purpose.title}
-            id={purpose.id}
+            title={purpose.name}
+            id={purpose.uuid}
             onRemove={handleRemovePurpose}
             onSave={handleSavePurpose}
           />
