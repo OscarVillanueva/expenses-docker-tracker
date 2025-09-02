@@ -19,17 +19,19 @@ const AccumulatedList: FC<AccumulatedListProps> = ({ items }) => {
   
 
   const handleUpdateAcc = async (id: string, value: string) => {
-    const exits = list.find(e => e.uuid === id)
+    const exists = list.findIndex(e => e.uuid === id)
 
-    if (!exits) {
+    if (exists === -1) {
       alert("The acc no exits")
       return 
     }
 
-    const response = await actions.updateAccumulated({ uuid: id, name: exits.name, total: Number(value) }) 
+    const response = await actions.updateAccumulated({ uuid: id, name: list[exists].name, total: Number(value) })
 
     if (response) {
+      updateList(list.with(exists, { ...list[exists], total: value }))
       updateAcc(Number(value))
+      
       alert("Acc updated")
     }
     else alert("An error ocurrent")
