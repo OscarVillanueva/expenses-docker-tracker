@@ -48,5 +48,28 @@ export const server = {
         return null
       }
     }
+  }),
+  updatePurpose: defineAction({
+    input: z.object({
+      uuid: z.string().uuid(),
+      name: z.string()
+    }),
+    handler: async ({ uuid, name }) => {
+      try {
+        const raw = await fetch(`http://backend:8000/purpose/${uuid}`, {
+          method: "PUT",
+          headers: {
+            "Authorization": `Basic ${API_KEY}`
+          },
+          body: JSON.stringify({ name })
+        })
+
+        const json = await raw.json()
+        return json
+      } catch (err) {
+        console.log(err)
+        return err
+      }
+    }
   })
 }

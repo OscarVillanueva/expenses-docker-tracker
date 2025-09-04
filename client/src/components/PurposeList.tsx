@@ -47,8 +47,21 @@ const PurposeList: FC<PurposeListProps> = ({ purposes }) => {
   const handleRemovePurpose = (id: string) => {
   };
 
-  const handleSavePurpose = (id: string, newTitle: string) => {
+  const handleSavePurpose = async (id: string, newTitle: string) => {
+    const exists = state.list.findIndex(e => e.uuid === id)
 
+    if (exists < 0) return
+
+    const {data, error} = await actions.updatePurpose({ uuid: id, name: newTitle })
+   
+    if (error || !data.success){
+      console.log(error)
+      alert("An error occurred")
+      return
+    }
+
+    state.setList(state.list.with(exists, { ...state.list[exists], name: newTitle })) 
+    alert("Purpose updated successfully")
   };
 
   return (
