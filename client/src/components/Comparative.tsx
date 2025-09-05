@@ -1,6 +1,7 @@
-import { type FC, useEffect } from 'react';
+import { type FC, useEffect, useMemo } from 'react';
 import PieChart from './PieChart';
 import { accumulatedState } from '../state/accumulatedState' 
+import { purposeState } from '../state/purposeState'
 
 interface ComparativeProps {
   accumulated: number
@@ -8,6 +9,11 @@ interface ComparativeProps {
 
 const Comparative: FC<ComparativeProps> = ({ accumulated }) => {
   const acc = accumulatedState(state => state)
+  const purposes = purposeState(state => state.list)
+
+  const purposeTotal = useMemo(() => {
+    return purposes.reduce((acc, current) => acc + Number(current.total),0)
+  }, [purposes])
 
   useEffect(() => {
     acc.updateAccumulated(accumulated)
@@ -19,7 +25,7 @@ const Comparative: FC<ComparativeProps> = ({ accumulated }) => {
         Accumulated vs Purposes
       </h2>
 
-      <PieChart data={[acc.accumulated, 8000]} />
+      <PieChart data={[acc.accumulated, purposeTotal]} />
 
       <div className="flex items-center justify-evenly">
         <div>
@@ -39,8 +45,20 @@ const Comparative: FC<ComparativeProps> = ({ accumulated }) => {
               Purpose
             </p>
           </div>
-          <p className="text-center text-xl font-light">{8000}</p>
+          <p className="text-center text-xl font-light">{purposeTotal}</p>
         </div>
+      </div>
+
+
+      <div className = "flex flex-col items-center justify-center">
+        <div className = "flex items-center gap-2">
+          <span className = "w-6 h-6 rounded-full bg-purple-900 inline-block"/>
+          <p className="text-2xl font-bold">
+            Diff
+          </p>
+        </div>
+
+        <p className="text-center text-xl font-light">{acc.accumulated - purposeTotal}</p>
       </div>
     </div>
   );
