@@ -2,6 +2,7 @@ import type { FC, MouseEvent } from "react";
 import { useFormik } from "formik";
 import { createPortal } from "react-dom";
 import { transactionSchema } from "../validators/transactionValidator";
+import { purposeState } from '../state/purposeState'
 
 type TransactionFormValues = {
   transactionName: string;
@@ -19,6 +20,8 @@ type DrawerProps = {
 };
 
 export const CreateTransactionModal: FC<DrawerProps> = ({ open, onClose, action }) => {
+  const purposes = purposeState(state => state.list)
+
   const formik = useFormik<TransactionFormValues>({
     initialValues: {
       transactionName: "",
@@ -173,7 +176,7 @@ export const CreateTransactionModal: FC<DrawerProps> = ({ open, onClose, action 
                 htmlFor="category"
                 className="block  text-sm font-bold mb-2"
               >
-                Category:
+                Purposes
               </label>
               <select
                 id="category"
@@ -183,12 +186,11 @@ export const CreateTransactionModal: FC<DrawerProps> = ({ open, onClose, action 
                 onBlur={formik.handleBlur}
                 value={formik.values.category}
               >
-                <option>Select a category</option>
-                <option value="food">Food</option>
-                <option value="transport">Transportation</option>
-                <option value="housing">Housing</option>
-                <option value="utilities">Utilities</option>
-                <option value="entertainment">Entertainment</option>
+                <option>Select a purpose</option>
+
+                {purposes.map(element => (
+                  <option value={element.uuid}>{element.name}</option> 
+                ))}
               </select>
             </div>
 
