@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import { transactionSchema } from "../validators/transactionValidator";
 import { purposeState } from '../state/purposeState'
 
-type TransactionFormValues = {
+export type TransactionFormValues = {
   transactionName: string;
   date: string;
   amount: number | '';
@@ -33,7 +33,6 @@ export const CreateTransactionModal: FC<DrawerProps> = ({ open, onClose, action 
     },
     validationSchema: transactionSchema,
     onSubmit: async (values, { resetForm }) => {
-      console.log("Form data submitted:", values);
       await action(values)
       resetForm();
       onClose()
@@ -87,7 +86,7 @@ export const CreateTransactionModal: FC<DrawerProps> = ({ open, onClose, action 
                 Date:
               </label>
               <input
-                type="date"
+                type="datetime-local"
                 id="date"
                 name="date"
                 className="shadow appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline"
@@ -189,7 +188,11 @@ export const CreateTransactionModal: FC<DrawerProps> = ({ open, onClose, action 
                 <option>Select a purpose</option>
 
                 {purposes.map(element => (
-                  <option value={element.uuid}>{element.name}</option> 
+                  <option 
+                    key = {element.id}
+                    value={`${element.name}:${element.uuid}`}>
+                    {element.name}
+                  </option> 
                 ))}
               </select>
             </div>

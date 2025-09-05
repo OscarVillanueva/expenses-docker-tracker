@@ -92,5 +92,32 @@ export const server = {
         return err
       }
     }
+  }),
+  createTransaction: defineAction({
+    input: z.object({
+      date: z.string(),
+      is_expense: z.boolean(),
+      name: z.string(),
+      amount: z.number(),
+      is_cash: z.boolean(),
+      included_in: z.string()
+    }),
+    handler: async (input) => {
+      try {
+        const raw = await fetch(`http://backend:8000/transaction`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Basic ${API_KEY}`
+          },
+          body: JSON.stringify(input)
+        })
+
+        const json = await raw.json()
+        return json
+      } catch (err) {
+        console.log(err)
+        return err
+      }
+    }
   })
 }

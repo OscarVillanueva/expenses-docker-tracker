@@ -26,7 +26,7 @@ const Transaction: FC<TransactionProps> = ({ transaction, onRemove }) => {
       <div className="flex items-center gap-4">
         <IconButton
           id={`transaction-remove-${transaction.id}`}
-          iconName="lucide--coins hover:lucide--trash-2 text-3xl bg-blue-300"
+          iconName={`${transaction.is_cash ? "lucide--coins" : "lucide--credit-card"} hover:lucide--trash-2 text-3xl bg-blue-300`}
           onClick={handleRemove}
         />
         
@@ -37,7 +37,9 @@ const Transaction: FC<TransactionProps> = ({ transaction, onRemove }) => {
         </div>
       </div>
 
-      <h4 className="text-accent text-2xl font-bold">${transaction.amount}</h4>
+      <h4 className={`${transaction.is_expense ? "text-red-600" : "text-accent"} text-2xl font-bold`}>
+        ${transaction.amount}
+      </h4>
     </div>
   );
 };
