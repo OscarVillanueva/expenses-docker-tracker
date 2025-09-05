@@ -44,7 +44,24 @@ const PurposeList: FC<PurposeListProps> = ({ purposes }) => {
     state.setList([...state.list, append])
   };
 
-  const handleRemovePurpose = (id: string) => {
+  const handleRemovePurpose = async (id: string) => {
+    const exists = state.list.findIndex(e => e.uuid === id)
+
+    if (exists < 0) return
+
+    const {data, error} = await actions.deletePurpose({ uuid: id })
+   
+    if (error || !data.success){
+      console.log(error)
+      alert("An error occurred")
+      return
+    } 
+
+    state.setList([
+      ...state.list.slice(0, exists), 
+      ...state.list.slice(exists + 1 )
+    ])
+    alert("Delete successfully")
   };
 
   const handleSavePurpose = async (id: string, newTitle: string) => {

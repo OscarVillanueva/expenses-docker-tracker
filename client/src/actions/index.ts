@@ -71,5 +71,26 @@ export const server = {
         return err
       }
     }
+  }),
+  deletePurpose: defineAction({
+    input: z.object({
+      uuid: z.string().uuid(),
+    }),
+    handler: async ({ uuid }) => {
+      try {
+        const raw = await fetch(`http://backend:8000/purpose/${uuid}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Basic ${API_KEY}`
+          },
+        })
+
+        const json = await raw.json()
+        return json
+      } catch (err) {
+        console.log(err)
+        return err
+      }
+    }
   })
 }
