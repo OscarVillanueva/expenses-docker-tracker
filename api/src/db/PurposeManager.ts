@@ -10,7 +10,7 @@ import {
 import { Response } from "../types/Response.ts";
 import { db } from "./config.ts"
 import { purpose } from "./schema.ts";
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 export const PurposeManager = {
   async get(props: GetPurpose): Promise<Response<GetPurposeResponse[]>> {

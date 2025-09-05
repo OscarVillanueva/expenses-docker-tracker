@@ -18,7 +18,10 @@ export const TransactionManager = {
       const { userID } = props;
 
       const result = await db
-        .select()
+        .select({
+          ...transaction,
+          included_in: purpose.uuid
+        })
         .from(transaction)
         .innerJoin(purpose, eq(transaction.included_in, purpose.id))
         .where(eq(purpose.belong_to, userID));
