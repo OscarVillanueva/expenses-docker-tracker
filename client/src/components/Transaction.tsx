@@ -1,30 +1,23 @@
-import { type FC } from 'react';
+import { type FC, useMemo } from 'react';
 import IconButton from './IconButton';
+import { type Transaction as TransactionItem } from '../types/TransactionResponse'
+import { formatDate } from '../utils/formatDate'
 
 interface TransactionProps {
-  id: string;
-  name: string;
-  date?: string;
-  amount?: string;
-  purpose?: string;
-  isCash?: boolean;
+  transaction: TransactionItem
   onRemove: (id: string) => void;
 }
 
-const Transaction: FC<TransactionProps> = ({ 
-  id, 
-  name, 
-  date = "20 Jun 2025", 
-  amount = "1200", 
-  purpose = "Tattoo",
-  isCash = true,
-  onRemove 
-}) => {
+const Transaction: FC<TransactionProps> = ({ transaction, onRemove }) => {
+  const date = useMemo(() => {
+    return formatDate(transaction.date)
+  }, [transaction])
+
   const handleRemove = () => {
-    const result = confirm(`Delete this transaction: ${name}`);
+    const result = confirm(`Delete this transaction: ${transaction.name}`);
     
     if (result) {
-      onRemove(id);
+      onRemove(transaction.uuid);
     }
   };
 
@@ -32,19 +25,19 @@ const Transaction: FC<TransactionProps> = ({
     <div className="flex items-center justify-between bg-secondary mb-3 p-4 rounded-md relative">
       <div className="flex items-center gap-4">
         <IconButton
-          id={`transaction-remove-${id}`}
+          id={`transaction-remove-${transaction.id}`}
           iconName="lucide--coins hover:lucide--trash-2 text-3xl bg-blue-300"
           onClick={handleRemove}
         />
         
         <div>
-          <p className="text-xl">{name}</p>
+          <p className="text-xl">{transaction.name}</p>
           <small className="block text-gray-400">{date}</small>
-          <small className="font-light text-gray-400">{purpose}</small>
+          <small className="font-light text-gray-400">{transaction.purposeName}</small>
         </div>
       </div>
 
-      <h4 className="text-accent text-2xl font-bold">{amount}</h4>
+      <h4 className="text-accent text-2xl font-bold">${transaction.amount}</h4>
     </div>
   );
 };

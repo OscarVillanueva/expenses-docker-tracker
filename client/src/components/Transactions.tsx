@@ -1,48 +1,27 @@
-import { type FC, useState } from 'react';
+import { type FC, useState, useEffect } from 'react';
 import Transaction from './Transaction';
 import IconButton from './IconButton';
 import { CreateTransactionModal } from './CreateTransactionModal'
-
-interface TransactionItem {
-  id: string;
-  name: string;
-  date?: string;
-  amount?: string;
-  purpose?: string;
-  isCash?: boolean;
-}
+import { type Data } from '../types/TransactionResponse'
+import { transactionState } from '../state/transactionState'
 
 interface TransactionsProps {
-  transactions?: TransactionItem[];
-  onAddTransaction?: () => void;
+  transactions: Data;
+  onAddTransaction: () => void;
 }
 
-const Transactions: FC<TransactionsProps> = ({ 
-  transactions = [
-    {
-      id: "123",
-      name: "Pago de quina",
-      date: "20 Jun 2025",
-      amount: "+ $ 1200",
-      isCash: true
-    },
-    {
-      id: "1234", 
-      name: "Pago de quina",
-      date: "20 Jun 2025",
-      amount: "+ $ 1200",
-      isCash: true
-    }
-  ],
-}) => {
-  const [transactionList, setTransactionList] = useState<TransactionItem[]>(transactions);
+const Transactions: FC<TransactionsProps> = ({ transactions, onAddTransaction }) => {
+  const state = transactionState(state => state)
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    state.setList(transactions.data) 
+  }, [])
 
   const handleAddTransaction = async () => {
   };
 
   const handleRemoveTransaction = (id: string) => {
-    setTransactionList(prev => prev.filter(transaction => transaction.id !== id));
   };
 
   return (
@@ -64,15 +43,10 @@ const Transactions: FC<TransactionsProps> = ({
           />
         </div>
 
-        {transactionList.map(transaction => (
+        {state.list && state.list.map(transaction => (
           <Transaction
             key={transaction.id}
-            id={transaction.id}
-            name={transaction.name}
-            date={transaction.date}
-            amount={transaction.amount}
-            purpose={transaction.purpose}
-            isCash={transaction.isCash}
+            transaction = { transaction }
             onRemove={handleRemoveTransaction}
           />
         ))}

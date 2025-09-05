@@ -20,7 +20,8 @@ export const TransactionManager = {
       const result = await db
         .select({
           ...transaction,
-          included_in: purpose.uuid
+          included_in: purpose.uuid,
+          purposeName: purpose.name
         })
         .from(transaction)
         .innerJoin(purpose, eq(transaction.included_in, purpose.id))

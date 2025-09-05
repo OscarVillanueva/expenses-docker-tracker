@@ -7,11 +7,15 @@ import Comparative from '../components/Comparative.tsx';
 import AccumulatedList from '../components/AccumulatedList.tsx';
 import { fetchAccumulated } from '../utils/fetchAccumulated'
 import { fetchPurposes } from '../utils/fetchPurposes'
+import { fetchTransactions } from '../utils/fetchTransactions'
 
 export const prerender = false
-const [acc, purposes] = await Promise.all([fetchAccumulated(), fetchPurposes()])
+const [acc, purposes, transactions] = await Promise.all([
+  fetchAccumulated(), fetchPurposes(), fetchTransactions()
+])
 
 const totalAcc = acc.data.data.reduce((acc, current) => acc + Number(current.total) ,0)
+console.log(transactions)
 ---
 
 <Layout>
@@ -21,7 +25,7 @@ const totalAcc = acc.data.data.reduce((acc, current) => acc + Number(current.tot
     <PurposeList client:load purposes = {purposes.data}/>
 
     <section class="grid grid-cols-2 gap-4">
-      <Transactions client:only="react" />
+      <Transactions client:only="react" transactions = {transactions.data}/>
 
       <div>
         <Comparative client:load accumulated = {totalAcc}/>

@@ -30,6 +30,8 @@ services:
     image: mysql:8.0
     volumes:
       - expenses-mysql-data:/var/lib/mysql
+    environment:
+      TZ: "America/Mexico_City"
     env_file:
       - ./api/src/db/.env
     healthcheck:
