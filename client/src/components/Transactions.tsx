@@ -4,6 +4,7 @@ import Transaction from "./Transaction";
 import IconButton from "./IconButton";
 import { type Data, type Transaction as TransactionItem } from "../types/TransactionResponse";
 import { transactionState } from "../state/transactionState";
+import { purposeState } from "../state/purposeState";
 import { dateWithOffset } from "../utils/dateWithOffset"
 import {
   CreateTransactionModal,
@@ -16,6 +17,8 @@ interface TransactionsProps {
 
 const Transactions: FC<TransactionsProps> = ({ transactions }) => {
   const state = transactionState((state) => state);
+  const updatePurpose = purposeState(state => state.updatePurpose)
+
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -53,9 +56,37 @@ const Transactions: FC<TransactionsProps> = ({ transactions }) => {
     }
 
     state.setList([...state.list, newTrasaction])
+    updatePurpose(values.category, values.amount || 0, values.type === "expense")
   };
 
-  const handleRemoveTransaction = (id: string) => {};
+  const handleRemoveTransaction = async (id: string) => {
+    const exists = state.list.findIndex(e => e.uuid === id)
+
+    if(exists < 0) {
+      alert("An error occured")
+      return
+    }
+
+    const { data, error } = await actions.deleteTransaction({ uuid: id })
+
+    if (error || !data.success) {
+      alert("An error occurred")
+      return
+    }
+
+    updatePurpose(
+      state.list[exists].included_in, 
+      Number(state.list[exists].amount) || 0, 
+      !state.list[exists].is_expense
+    )
+
+    state.setList([
+      ...state.list.slice(0, exists), 
+      ...state.list.slice(exists + 1 )
+    ])
+
+    alert("Delete successfully")
+  };
 
   return (
     <>

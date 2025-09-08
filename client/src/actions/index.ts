@@ -119,5 +119,26 @@ export const server = {
         return err
       }
     }
+  }),
+  deleteTransaction: defineAction({
+    input: z.object({
+      uuid: z.string()
+    }),
+    handler: async ({ uuid }) => {
+      try {
+        const raw = await fetch(`http://backend:8000/transaction/${uuid}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Basic ${API_KEY}`
+          },
+        })
+
+        const json = await raw.json()
+        return json
+      } catch (err) {
+        console.log(err)
+        return err
+      }
+    }
   })
 }
