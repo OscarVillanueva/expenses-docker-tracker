@@ -61,7 +61,7 @@ const Transactions: FC<TransactionsProps> = ({ transactions }) => {
 
   const handleRemoveTransaction = async (id: string) => {
     const exists = state.list.findIndex(e => e.uuid === id)
-
+    
     if(exists < 0) {
       alert("An error occured")
       return

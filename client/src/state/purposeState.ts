@@ -12,11 +12,9 @@ export const purposeState = create<PurposeState>((set) => ({
   setList: (list: Purpose[]) => set({ list }),
   updatePurpose: (purpose: string, amount: number, isExpense: boolean) => set(state => {
     const l = state.list.map(e => {
-      if(e.uuid === purpose) return e
+      if(e.uuid !== purpose) return e
 
       const value = isExpense ? -amount : amount
-
-      console.log({ isExpense, value})
 
       return {
         ...e,
