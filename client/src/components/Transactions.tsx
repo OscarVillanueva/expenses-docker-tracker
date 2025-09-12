@@ -45,13 +45,13 @@ const Transactions: FC<TransactionsProps> = ({ transactions }) => {
     
     const newTrasaction: TransactionItem = {
       id: 9999, 
-      uuid: data.data,
+      uuid: data.data.data,
       date: dateWithOffset(values.date),
       is_expense: values.type === "expense",
       name: values.transactionName,
       amount: `${values.amount}`,
       is_cash: values.method === "cash",
-      included_in: values.category,
+      included_in: uuid,
       purposeName: name
     }
 
@@ -61,7 +61,7 @@ const Transactions: FC<TransactionsProps> = ({ transactions }) => {
 
   const handleRemoveTransaction = async (id: string) => {
     const exists = state.list.findIndex(e => e.uuid === id)
-    
+
     if(exists < 0) {
       alert("An error occured")
       return
