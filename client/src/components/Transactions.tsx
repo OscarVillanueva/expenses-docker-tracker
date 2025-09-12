@@ -56,7 +56,7 @@ const Transactions: FC<TransactionsProps> = ({ transactions }) => {
     }
 
     state.setList([...state.list, newTrasaction])
-    updatePurpose(values.category, values.amount || 0, values.type === "expense")
+    updatePurpose(uuid, values.amount || 0, values.type === "expense")
   };
 
   const handleRemoveTransaction = async (id: string) => {
