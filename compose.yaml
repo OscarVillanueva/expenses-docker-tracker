@@ -45,6 +45,8 @@ services:
     build:
       context: ./client
       target: production
+    env_file:
+      - ./client/.env
     develop:
       watch:
         - path: ./client/src
