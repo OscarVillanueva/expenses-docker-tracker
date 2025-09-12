@@ -1,4 +1,5 @@
 import type { FC, MouseEvent } from "react";
+import { useMemo } from 'react'
 import { useFormik } from "formik";
 import { createPortal } from "react-dom";
 import { transactionSchema } from "../validators/transactionValidator";
@@ -21,6 +22,16 @@ type DrawerProps = {
 
 export const CreateTransactionModal: FC<DrawerProps> = ({ open, onClose, action }) => {
   const purposes = purposeState(state => state.list)
+
+  const maxDate = useMemo(() => {
+    const today = new Date();
+    
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}T23:59`;
+  }, []);
 
   const formik = useFormik<TransactionFormValues>({
     initialValues: {
@@ -89,6 +100,7 @@ export const CreateTransactionModal: FC<DrawerProps> = ({ open, onClose, action 
                 type="datetime-local"
                 id="date"
                 name="date"
+                max = {maxDate}
                 className="shadow appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
