@@ -2,6 +2,7 @@ import { type FC, useEffect, useMemo } from 'react';
 import PieChart from './PieChart';
 import { accumulatedState } from '../state/accumulatedState' 
 import { purposeState } from '../state/purposeState'
+import { commifyNumber } from '../utils/commifyNumbers'
 
 interface ComparativeProps {
   accumulated: number
@@ -35,7 +36,9 @@ const Comparative: FC<ComparativeProps> = ({ accumulated }) => {
               Accumulated
             </p>
           </div>
-          <p className="text-center text-xl font-light">{acc.accumulated}</p>
+          <p className="text-center text-xl font-light">
+            {commifyNumber(`$${acc.accumulated}`)}
+          </p>
         </div>
 
         <div>
@@ -45,7 +48,7 @@ const Comparative: FC<ComparativeProps> = ({ accumulated }) => {
               Purpose
             </p>
           </div>
-          <p className="text-center text-xl font-light">{purposeTotal}</p>
+          <p className="text-center text-xl font-light">{commifyNumber(`$${purposeTotal}`)}</p>
         </div>
       </div>
 
@@ -58,7 +61,7 @@ const Comparative: FC<ComparativeProps> = ({ accumulated }) => {
           </p>
         </div>
 
-        <p className="text-center text-xl font-light">{acc.accumulated - purposeTotal}</p>
+        <p className="text-center text-xl font-light">{commifyNumber(`$${acc.accumulated - purposeTotal}`)}</p>
       </div>
     </div>
   );

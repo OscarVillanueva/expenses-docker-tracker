@@ -1,5 +1,6 @@
 import { type FC, useState, type ChangeEvent } from 'react';
 import IconButton from './IconButton';
+import { commifyNumber } from '../utils/commifyNumbers'
 
 interface PurposeProps {
   title: string;
@@ -63,7 +64,7 @@ const Purpose: FC<PurposeProps> = ({ title, id, total, onRemove, onSave }) => {
         </div>
       </div>
 
-      <p className="text-2xl font-bold">${total}</p>
+      <p className="text-2xl font-bold">{commifyNumber(`$${total}`)}</p>
     </article>
   );
 };
