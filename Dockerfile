@@ -9,7 +9,7 @@ COPY api/ ./api/
 WORKDIR /app/api
 
 # Compile the main app
-RUN deno cache ./api/src/main.ts
+RUN deno cache ./src/main.ts
 
 EXPOSE 8000
 

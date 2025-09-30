@@ -1,6 +1,6 @@
 import { Status } from "jsr:@oak/commons@1/status";
 import * as uuid from "jsr:@std/uuid";
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and, desc, gte } from 'drizzle-orm';
 import { db } from "./config.ts"
 import { transaction, purpose } from "./schema.ts";
 import { Response } from "../types/Response.ts";
@@ -17,6 +17,9 @@ export const TransactionManager = {
     try {
       const { userID } = props;
 
+      const twoMonthsAgo = new Date();
+      twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
+
       const result = await db
         .select({
           ...transaction,
@@ -25,7 +28,13 @@ export const TransactionManager = {
         })
         .from(transaction)
         .innerJoin(purpose, eq(transaction.included_in, purpose.id))
-        .where(eq(purpose.belong_to, userID));
+        .where(
+          and(
+            eq(purpose.belong_to, userID),
+            gte(transaction.date, twoMonthsAgo)
+          )
+        )
+        .orderBy(desc(transaction.date));;
 
       return {
         success: true,
