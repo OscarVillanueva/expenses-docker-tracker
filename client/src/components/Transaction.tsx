@@ -22,7 +22,7 @@ const Transaction: FC<TransactionProps> = ({ transaction, onRemove }) => {
   };
 
   return (
-    <div className="flex items-center justify-between bg-secondary mb-3 p-4 rounded-md relative">
+    <div className="flex items-center justify-between bg-secondary mb-3 p-3 rounded-md relative">
       <div className="flex items-center gap-4">
         <IconButton
           id={`transaction-remove-${transaction.id}`}

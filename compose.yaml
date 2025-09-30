@@ -44,7 +44,7 @@ services:
     container_name: astro-client
     build:
       context: ./client
-      target: development
+      target: production
     env_file:
       - ./client/.env
     develop:
