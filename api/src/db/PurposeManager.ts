@@ -1,16 +1,18 @@
 import { Status } from "jsr:@oak/commons@1/status";
 import * as uuid from "jsr:@std/uuid";
+import { eq, and, gte, desc } from 'drizzle-orm';
 import {
   GetPurpose,
   GetPurposeResponse,
   CreatePurpose,
   DeletePurpose,
   UpdatePurpose,
+  FetchPurposeTransactions,
 } from "../types/PurposeManagerTypes.ts";
 import { Response } from "../types/Response.ts";
+import { TransactionResponse } from "../types/TransactionManagerTypes.ts";
 import { db } from "./config.ts"
-import { purpose } from "./schema.ts";
-import { eq, and } from 'drizzle-orm';
+import { purpose, transaction } from "./schema.ts";
 
 export const PurposeManager = {
   async get(props: GetPurpose): Promise<Response<GetPurposeResponse[]>> {
@@ -38,6 +40,48 @@ export const PurposeManager = {
           status: Status.UnprocessableEntity,
         },
       };
+    }
+  },
+  async transactions(props: FetchPurposeTransactions): Promise<Response<TransactionResponse[]>>{
+    try {
+      const { userID, purposeID } = props;
+
+      const twoMonthsAgo = new Date();
+      twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
+
+      const result = await db
+        .select({
+          ...transaction,
+          included_in: purpose.uuid,
+          purposeName: purpose.name
+        })
+        .from(transaction)
+        .innerJoin(purpose, eq(transaction.included_in, purpose.id))
+        .where(
+          and(
+            eq(purpose.uuid, purposeID),
+            eq(purpose.belong_to, userID),
+            gte(transaction.date, twoMonthsAgo)
+          )
+        )
+        .orderBy(desc(transaction.date));
+      
+      return {
+        success: true,
+        data: {
+          message: "transaction data",
+          data: result as TransactionResponse[],
+          status: Status.OK,
+        },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        data: {
+          message: (error as Error).message || "unexpected_failure",
+          status: Status.UnprocessableEntity
+        }
+      } 
     }
   },
   async insert(props: CreatePurpose): Promise<Response<string>> {

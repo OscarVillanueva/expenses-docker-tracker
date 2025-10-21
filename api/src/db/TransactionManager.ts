@@ -34,7 +34,7 @@ export const TransactionManager = {
             gte(transaction.date, twoMonthsAgo)
           )
         )
-        .orderBy(desc(transaction.date));;
+        .orderBy(desc(transaction.date));
 
       return {
         success: true,

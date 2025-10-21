@@ -17,6 +17,24 @@ router.get("/purpose", async (ctx) => {
   ctx.response.body = response;
 });
 
+router.get("/purpose/:id/transaction", async (ctx) => {
+  if(!uuid.validate(ctx.params.id)) {
+    ctx.response.status = Status.BadRequest
+    ctx.response.body = "Invalid uuid"
+    return
+  }
+
+  const { user } = ctx.state;
+
+  const response = await PurposeManager.transactions({
+    purposeID: ctx.params.id,
+    userID: user.sub
+  })
+
+  ctx.response.status = response.data.status;
+  ctx.response.body = response;
+})
+
 router.post("/purpose", async (ctx) => {
   const { user } = ctx.state;
   const body = await ctx.request.body.json();

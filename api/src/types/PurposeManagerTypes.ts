@@ -29,3 +29,9 @@ export type UpdatePurpose = {
   purposeID: string;
   userID: string;
 } 
+
+// Fetch Purpose transactions
+export type FetchPurposeTransactions = {
+  userID: string;
+  purposeID: string;
+}
