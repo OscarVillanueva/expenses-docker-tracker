@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Dec 29, 2025 at 11:28 PM
+-- Generation Time: Jan 14, 2026 at 11:26 PM
 -- Server version: 8.0.44
 -- PHP Version: 8.3.27
 
@@ -41,7 +41,7 @@ CREATE TABLE `accumulated` (
 --
 
 INSERT INTO `accumulated` (`id`, `uuid`, `total`, `belong_to`, `created_at`, `name`) VALUES
-(2, 'd3865d00-7707-11f0-86fc-13e807de0b22', 27536, '993c4b34-6764-44c9-bae5-e1eb26ca1746', '2025-08-11 23:06:34', 'Herencia');
+(2, 'd3865d00-7707-11f0-86fc-13e807de0b22', 26070, '993c4b34-6764-44c9-bae5-e1eb26ca1746', '2025-08-11 23:06:34', 'Herencia');
 
 -- --------------------------------------------------------
 
@@ -63,10 +63,10 @@ CREATE TABLE `purpose` (
 --
 
 INSERT INTO `purpose` (`id`, `uuid`, `name`, `total`, `belong_to`, `created_at`) VALUES
-(6, '94cc0cc0-90e0-11f0-8169-2372cdfa1342', 'Ahorro general', 19343, '993c4b34-6764-44c9-bae5-e1eb26ca1746', '2025-09-13 20:31:09'),
+(6, '94cc0cc0-90e0-11f0-8169-2372cdfa1342', 'Ahorro general', 16343, '993c4b34-6764-44c9-bae5-e1eb26ca1746', '2025-09-13 20:31:09'),
 (7, 'cd5be0b0-90e0-11f0-8169-2372cdfa1342', 'Casa', 2500, '993c4b34-6764-44c9-bae5-e1eb26ca1746', '2025-09-13 20:32:44'),
-(8, 'e61fe790-90e0-11f0-8169-2372cdfa1342', 'Tatuaje', 1000, '993c4b34-6764-44c9-bae5-e1eb26ca1746', '2025-09-13 20:33:25'),
-(9, '0c6bad30-90e1-11f0-8169-2372cdfa1342', 'Seguro del coche', 500, '993c4b34-6764-44c9-bae5-e1eb26ca1746', '2025-09-13 20:34:29'),
+(8, 'e61fe790-90e0-11f0-8169-2372cdfa1342', 'Tatuaje', 3000, '993c4b34-6764-44c9-bae5-e1eb26ca1746', '2025-09-13 20:33:25'),
+(9, '0c6bad30-90e1-11f0-8169-2372cdfa1342', 'Seguro del coche', 1000, '993c4b34-6764-44c9-bae5-e1eb26ca1746', '2025-09-13 20:34:29'),
 (10, '67954690-dab4-11f0-8e6b-7d264168ee8a', 'raqueta', 600, '993c4b34-6764-44c9-bae5-e1eb26ca1746', '2025-12-16 19:21:21');
 
 -- --------------------------------------------------------
@@ -144,7 +144,11 @@ INSERT INTO `transaction` (`id`, `uuid`, `date`, `is_expense`, `name`, `amount`,
 (77, '1b0f04b0-e50d-11f0-8a19-7b6dad9344a0', '2025-12-30 05:21:00', 0, 'renta ', 2500, 7, 0),
 (78, '4235c100-e50d-11f0-8a19-7b6dad9344a0', '2025-12-30 05:22:00', 0, 'tarjeta', 8000, 6, 0),
 (79, '597ee7b0-e50d-11f0-8a19-7b6dad9344a0', '2025-12-30 05:23:00', 0, 'aporte segunda sesion mangas', 1000, 8, 0),
-(80, '063ded70-e50e-11f0-8a19-7b6dad9344a0', '2025-12-30 05:27:00', 0, 'aporte raqueta', 600, 10, 0);
+(80, '063ded70-e50e-11f0-8a19-7b6dad9344a0', '2025-12-30 05:27:00', 0, 'aporte raqueta', 600, 10, 0),
+(81, '70afaa20-f19f-11f0-ad7d-8b90d154f100', '2026-01-15 05:19:00', 0, 'Aporte seguro', 500, 9, 0),
+(82, '81c21640-f19f-11f0-ad7d-8b90d154f100', '2026-01-15 05:19:00', 0, 'ahorro General', 8000, 6, 0),
+(83, 'ab10bba0-f19f-11f0-ad7d-8b90d154f100', '2026-01-15 05:20:00', 0, '2 session sleaves', 2000, 8, 0),
+(84, '43ad5620-f1a0-11f0-ad7d-8b90d154f100', '2026-01-15 05:24:00', 1, 'Pago tarjeta Diciembre', 11000, 6, 0);
 
 --
 -- Triggers `transaction`
@@ -242,7 +246,7 @@ ALTER TABLE `purpose`
 -- AUTO_INCREMENT for table `transaction`
 --
 ALTER TABLE `transaction`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 
 --
 -- Constraints for dumped tables
