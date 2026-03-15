@@ -1,3 +1,4 @@
 /api/src/db/.env
 node_modules
 .env
+*.sql
