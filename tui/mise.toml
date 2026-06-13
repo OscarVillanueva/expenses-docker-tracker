@@ -1,0 +1,14 @@
+[tools]
+go = "latest"
+
+[tasks.install]
+description = "Clean and install dependencies"
+run = "go mod tidy"
+
+[tasks.dev]
+description = "Build the TUI"
+run = "go run cmd/tui/main.go"
+
+[tasks.compile]
+description = "Compile the app to check errors"
+run = "go build cmd/api/main.go"
